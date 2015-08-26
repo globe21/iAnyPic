@@ -1,22 +1,76 @@
-//
-//  AppDelegate.swift
-//  iAnyPic
-//
-//  Created by Xiao Jiang on 8/22/15.
-//  Copyright (c) 2015 Xiao Jiang. All rights reserved.
-//
+/*!
+@header     AppDelegate.swift
+
+@brief      The delegate of UIApplication
+
+This file contains the most importnant method and properties decalaration.
+
+@author     Jiang Xiao
+
+@copyright  2015 Jiang Xiao. All rights reserved.
+
+@version    15.12.7
+*/
 
 import UIKit
+import Parse
+import Bolts
+import FBSDKCoreKit
+import ParseFacebookUtilsV4
 
 @UIApplicationMain
+
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    
+    let applicationID = "3ZSqi4DihLegAwqnu3GVOpFccEFQ4UeIkOuk3UHc"
+    let clientKey = "vgcqlEbtdsptzPSiH9cIsbbYPEdCpGeh61Rnf80F"
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        // Override point for customization after application launch.
-        return true
+        
+        // Enable local Datastore
+        Parse.enableLocalDatastore()
+
+        // Parse Initialization
+        Parse.setApplicationId(applicationID, clientKey: clientKey)
+        
+        // Make sure to update your URL scheme to match this facebook id.
+        PFFacebookUtils.initializeFacebookWithApplicationLaunchOptions(launchOptions)
+//
+//        // Clear application icon badge number
+//        if(application.applicationIconBadgeNumber != 0) {
+//            application.applicationIconBadgeNumber = 0
+//        }
+//        
+//        // Enable public read access by default, with any newly created PFObjects belonging to the current user
+//        var defaultACL = PFACL()
+//        defaultACL.setPublicReadAccess(true)
+//        PFACL.setDefaultACL(defaultACL, withAccessForCurrentUser: true)
+//        
+//        // Set up our app's global UIAppearance
+//        self.setupAppearance()
+//        
+//        // Start monitoring reachability
+//        self.monitorReachability()
+//        
+//        // Init view controllers
+//        self.welcomeViewController = PAPWelcomeViewController()
+//        self.navController = UINavigationController(rootViewController: self.welcomeViewController)
+//        self.navController.navigationBarHidden = true
+//        
+//        // Set window root view controller
+//        self.window?.rootViewController = self.navController
+//        self.window?.makeKeyAndVisible()
+//        
+//        // Handle push notification
+//        self.handlePush(launchOptions)
+        
+        return FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
+    }
+    
+    func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject?) -> Bool {
+        return FBSDKApplicationDelegate.sharedInstance().application(application, openURL: url, sourceApplication: sourceApplication, annotation: annotation)
     }
 
     func applicationWillResignActive(application: UIApplication) {
@@ -35,6 +89,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+        FBSDKAppEvents.activateApp()
     }
 
     func applicationWillTerminate(application: UIApplication) {
