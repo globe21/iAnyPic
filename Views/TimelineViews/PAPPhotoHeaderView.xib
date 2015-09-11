@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7706" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="PAPPhotoHeaderView" customModule="iAnyPic" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="JJj-Uq-nHB" userLabel="ContainerView">
+                    <rect key="frame" x="20" y="0.0" width="560" height="600"/>
+                    <subviews>
+                        <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fXe-po-yba" customClass="PAPProfileImageView" customModule="iAnyPic" customModuleProvider="target">
+                            <rect key="frame" x="4" y="4" width="35" height="35"/>
+                            <color key="backgroundColor" red="1" green="0.5" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                        </view>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="timestamp" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="flY-pN-xVZ" userLabel="TimestampLabel">
+                            <rect key="frame" x="50" y="24" width="480" height="18"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                            <color key="textColor" red="0.48627450980392156" green="0.48627450980392156" blue="0.48627450980392156" alpha="1" colorSpace="calibratedRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="B0j-Du-j3s" userLabel="CommentButton">
+                            <rect key="frame" x="242" y="10" width="29" height="28"/>
+                            <state key="normal" image="IconComment">
+                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                        </button>
+                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CXn-pf-Wgg" userLabel="LikeButton">
+                            <rect key="frame" x="206" y="8" width="29" height="29"/>
+                            <state key="normal" image="ButtonLike">
+                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <state key="selected" image="ButtonLikeSelected"/>
+                        </button>
+                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jdP-VH-k34">
+                            <rect key="frame" x="50" y="0.0" width="98" height="30"/>
+                            <state key="normal" title="Mattieu Gama">
+                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                        </button>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                </view>
+            </subviews>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+            <connections>
+                <outlet property="avatarImageView" destination="fXe-po-yba" id="2Kd-oz-ctc"/>
+                <outlet property="commentButton" destination="B0j-Du-j3s" id="9Zw-vi-Syh"/>
+                <outlet property="containerView" destination="JJj-Uq-nHB" id="cqJ-f7-mjy"/>
+                <outlet property="likeButton" destination="CXn-pf-Wgg" id="Fqi-cR-4xz"/>
+                <outlet property="timestampLabel" destination="flY-pN-xVZ" id="oqf-iJ-two"/>
+            </connections>
+        </view>
+    </objects>
+    <resources>
+        <image name="ButtonLike" width="29" height="29"/>
+        <image name="ButtonLikeSelected" width="29" height="29"/>
+        <image name="IconComment" width="29" height="28"/>
+    </resources>
+</document>

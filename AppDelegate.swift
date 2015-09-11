@@ -14,19 +14,26 @@ This file contains the most importnant method and properties decalaration.
 
 import UIKit
 import Parse
+import ParseUI
 import Bolts
 import FBSDKCoreKit
 import ParseFacebookUtilsV4
+import MBProgressHUD
 
 @UIApplicationMain
 
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate,  PFLogInViewControllerDelegate{
+    
+    var networkStatus: NetworkStatus?
 
     var window: UIWindow?
+    var rootNavController: UINavigationController!
     
     let applicationID = "3ZSqi4DihLegAwqnu3GVOpFccEFQ4UeIkOuk3UHc"
     let clientKey = "vgcqlEbtdsptzPSiH9cIsbbYPEdCpGeh61Rnf80F"
 
+    // MARK: - UIApplicationDelegate
+    
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         
         // Enable local Datastore
@@ -66,6 +73,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        // Handle push notification
 //        self.handlePush(launchOptions)
         
+        if let navController = self.window?.rootViewController as? UINavigationController {
+            self.rootNavController = navController
+        }
+        
         return FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
     }
     
@@ -95,7 +106,87 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
+    
+    // MARK: - PFLoginViewController
+    
+    func logInViewController(logInController: PFLogInViewController, didLogInUser user: PFUser) {
+        // user has logged in - we need to fetch all of their Facebook data before we let them in
+        if (!self.shouldProceedToMainInterface(user)) {
+            var hud = MBProgressHUD.showHUDAddedTo(self.rootNavController.visibleViewController.view, animated: true)
+            hud.labelText = "Loading"
+            hud.dimBackground = true
+        }
 
+        //
+        if (FBSDKAccessToken.currentAccessToken() != nil) {
+            let graphRequest = FBSDKGraphRequest(graphPath: "me", parameters: ["fields" : "name,email,friends"])
+            graphRequest.startWithCompletionHandler({ (connection, result, error) -> Void in
+                if(error != nil) {
+                    println(error)
+                }
+                else {
+                    if let userData = result as? NSDictionary {
+                        self.createUserProfile(result)
+                        self.followFacebookFriends(result)
+                    }
+                }
+            })
+        }
+        
+        // Subscribe to private push channel
+//        if (user) {
+//            NSString *privateChannelName = [NSString stringWithFormat:@"user_%@", [user objectId]];
+//            [[PFInstallation currentInstallation] setObject:[PFUser currentUser] forKey:kPAPInstallationUserKey];
+//            [[PFInstallation currentInstallation] addUniqueObject:privateChannelName forKey:kPAPInstallationChannelsKey];
+//            [[PFInstallation currentInstallation] saveEventually];
+//            [user setObject:privateChannelName forKey:kPAPUserPrivateChannelKey];
+//        }
+    }
+    
+    // MARK: - AppDelegate
+    
+    func isParseReachable() -> Bool {
+//        switch(self.networkStatus) {
+//            case NetworkStatus.NotReachable:
+//                return false
+//            case NetworkStatus.ReachableViaWiFi:
+//                return true
+//            case NetworkStatus.ReachableViaWWAN:
+//                reutnr true
+//        }
+        return true
+        
+    }
+    
+    // MARK: - ()
+    
+    func shouldProceedToMainInterface(user: PFUser) -> Bool {
+        if (PAPUtility.userHasValidFacebookData(user)) {
+            //MBProgressHUD.hideHUDForView(self.rootNavController.visibleViewController.view, animated: true)
+            
+            self.rootNavController.visibleViewController.dismissViewControllerAnimated(true, completion: { () -> Void in
+                self.rootNavController.visibleViewController.performSegueWithIdentifier("showTabBarController", sender: self)
+            })
+            
+            return true
+        }
+        
+        return false
+    }
+    
+    func createUserProfile(result: AnyObject) {
+        
+        if let facebookID = result.objectForKey("id") as? String {
+            PFUser.currentUser()?.setObject(facebookID, forKey: kPAPUserFacebookIDKey)
+        }
+        
+        if let facebookName = result.objectForKey("name") as? String {
+            PFUser.currentUser()?.setObject(facebookName, forKey: kPAPUserDisplayNameKey)
+        }
+    }
 
+    func followFacebookFriends(result: AnyObject) {
+        println("To-DO: Follow facebook friends")
+    }
 }
 

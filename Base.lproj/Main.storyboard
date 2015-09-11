@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BS3-Hn-ozY">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="ShV-QA-ppK">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
     </dependencies>
@@ -21,12 +21,12 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1ke-DS-qUd" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1211" y="1253"/>
+            <point key="canvasLocation" x="1267" y="770"/>
         </scene>
-        <!--Item 1-->
+        <!--HomeViewController-->
         <scene sceneID="Heb-nS-Eou">
             <objects>
-                <viewController id="gIQ-kj-fkE" sceneMemberID="viewController">
+                <viewController id="gIQ-kj-fkE" userLabel="HomeViewController" customClass="PAPPhotoTimelineViewController" customModule="iAnyPic" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="ySL-kc-hd8"/>
                         <viewControllerLayoutGuide type="bottom" id="b4M-ae-eoe"/>
@@ -34,13 +34,92 @@
                     <view key="view" contentMode="scaleToFill" id="FCn-xN-f78">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="BackgroundLeather" translatesAutoresizingMaskIntoConstraints="NO" id="uZT-tp-IME">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                            </imageView>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="uZT-tp-IME" secondAttribute="trailing" id="2sv-KS-GeX"/>
+                            <constraint firstItem="uZT-tp-IME" firstAttribute="leading" secondItem="FCn-xN-f78" secondAttribute="leading" id="8OM-qz-JeQ"/>
+                            <constraint firstAttribute="bottom" secondItem="uZT-tp-IME" secondAttribute="bottom" id="Vpt-KC-sg9"/>
+                            <constraint firstItem="uZT-tp-IME" firstAttribute="top" secondItem="FCn-xN-f78" secondAttribute="top" id="zLp-HT-5yw"/>
+                        </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Item 1" id="G9O-zD-n6X"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qiB-Zu-Jjf" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1210" y="590"/>
+            <point key="canvasLocation" x="1266" y="107"/>
+        </scene>
+        <!--Log In View Controller-->
+        <scene sceneID="81S-vq-BgU">
+            <objects>
+                <viewController id="Cqe-da-lPU" customClass="PAPLogInViewController" customModule="iAnyPic" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="diH-ak-vH1"/>
+                        <viewControllerLayoutGuide type="bottom" id="0uH-rk-kpz"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="WDH-eb-qlb">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Osv-oa-cEt" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-333" y="1292"/>
+        </scene>
+        <!--Welcome View Controller-->
+        <scene sceneID="8Yp-K1-7AX">
+            <objects>
+                <viewController id="Ifd-1A-MdR" customClass="PAPWelcomeViewController" customModule="iAnyPic" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="3ag-UH-XPl"/>
+                        <viewControllerLayoutGuide type="bottom" id="SVy-Rz-wrE"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="9GA-lx-D0T">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Default" translatesAutoresizingMaskIntoConstraints="NO" id="XTU-Gk-rlo">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="XTU-Gk-rlo" secondAttribute="trailing" id="RrI-z5-bUm"/>
+                            <constraint firstItem="SVy-Rz-wrE" firstAttribute="top" secondItem="XTU-Gk-rlo" secondAttribute="bottom" id="To2-EI-vi2"/>
+                            <constraint firstItem="XTU-Gk-rlo" firstAttribute="leading" secondItem="9GA-lx-D0T" secondAttribute="leading" id="XoK-I1-cyf"/>
+                            <constraint firstItem="XTU-Gk-rlo" firstAttribute="top" secondItem="9GA-lx-D0T" secondAttribute="top" id="b15-GB-nej"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="I8O-As-v8r"/>
+                    <connections>
+                        <segue destination="Cqe-da-lPU" kind="presentation" identifier="showLoginViewController" id="TpY-L8-Xz1"/>
+                        <segue destination="BS3-Hn-ozY" kind="show" identifier="showTabBarController" id="5Pn-WF-CvP"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="WhV-lR-ixr" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-333" y="439"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="2FC-xV-l3D">
+            <objects>
+                <navigationController navigationBarHidden="YES" id="ShV-QA-ppK" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="jRl-XN-nh4">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="Ifd-1A-MdR" kind="relationship" relationship="rootViewController" id="gio-v6-9FS"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Y6p-0K-INN" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1071" y="439"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="ksv-Ge-4cA">
@@ -59,11 +138,13 @@
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="RH0-I0-dv3" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="390" y="918"/>
+            <point key="canvasLocation" x="446" y="435"/>
         </scene>
     </scenes>
     <resources>
+        <image name="BackgroundLeather" width="80" height="80"/>
         <image name="BackgroundTabBar" width="320" height="49"/>
         <image name="BackgroundTabBarItemSelected" width="81" height="47"/>
+        <image name="Default" width="320" height="461"/>
     </resources>
 </document>

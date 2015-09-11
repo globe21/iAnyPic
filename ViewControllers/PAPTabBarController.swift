@@ -20,7 +20,7 @@ class PAPTabBarController: UITabBarController, UIImagePickerControllerDelegate, 
         cameraButton.frame = CGRectMake((self.tabBar.bounds.width - cameraButtonWidth)/2.0, 0.0, cameraButtonWidth, self.tabBar.bounds.height)
         cameraButton.setImage(UIImage(named: "ButtonCamera.png"), forState: UIControlState.Normal)
         cameraButton.setImage(UIImage(named: "ButtonCameraSelected.png"), forState: UIControlState.Highlighted)
-        cameraButton.addTarget(self, action: "photoCaptureButtonAction", forControlEvents: UIControlEvents.TouchUpInside)
+        cameraButton.addTarget(self, action: "photoCaptureButtonAction:", forControlEvents: UIControlEvents.TouchUpInside)
         self.tabBar.addSubview(cameraButton)
         
         // Add swipe gesture to the camera button
@@ -44,11 +44,38 @@ class PAPTabBarController: UITabBarController, UIImagePickerControllerDelegate, 
         
     }
     
-    func handleGesture(gestureRecognizer: UIGestureRecognizer) {
-        self.shouldPresentPhotoCaptureController()
+    // MARK: - UIActionSheetDelegate
+    
+    func actionSheet(actionSheet: UIActionSheet, clickedButtonAtIndex buttonIndex: Int) {
+        if(buttonIndex == 0) {
+            self.shouldStartCameraController()
+        } else if (buttonIndex == 1) {
+            self.shouldStartPhotoLibraryPickerController()
+        }
     }
+
     
     // MARK: - UIImagePickerDelegate
+    
+    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+        self.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
+        self.dismissViewControllerAnimated(false, completion: nil)
+        
+        if let image = info[UIImagePickerControllerEditedImage] as? UIImage {
+//            var editPhotoViewController = PAPEditPhotoViewController(anImage: image)
+//            editPhotoViewController.modalTransitionStyle = UIModalTransitionStyle.CrossDissolve
+//            
+//            self.navController.modalTransitionStyle = UIModalTransitionStyle.CrossDissolve
+//            self.navController.pushViewController(editPhotoViewController, animated: false)
+//            self.presentViewController(self.navController, animated: true, completion: nil)
+        }
+    }
+    
+    
+    // MARK: - PAPTabBarController
     
     func shouldPresentPhotoCaptureController() -> Bool {
         var presentedPhotoCaptureController = self.shouldStartCameraController()
@@ -60,9 +87,6 @@ class PAPTabBarController: UITabBarController, UIImagePickerControllerDelegate, 
         return presentedPhotoCaptureController
     }
     
-    // MARK: - PAPTabBarController
-    
-
     /*
     // MARK: - Navigation
 
@@ -75,6 +99,23 @@ class PAPTabBarController: UITabBarController, UIImagePickerControllerDelegate, 
 
     
     // MARK: - ()
+    
+    func handleGesture(gestureRecognizer: UIGestureRecognizer) {
+        self.shouldPresentPhotoCaptureController()
+    }
+    
+    func photoCaptureButtonAction(sender: AnyObject) {
+        var cameraDeviceAvailable = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
+        var photoLibraryAvailable = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.PhotoLibrary)
+        
+        if(cameraDeviceAvailable && photoLibraryAvailable) {
+            var actionSheet = UIActionSheet(title: nil, delegate: self, cancelButtonTitle: "Cancel", destructiveButtonTitle: nil, otherButtonTitles: "Take Photo", "Choose Photo")
+            actionSheet.showFromTabBar(self.tabBar)
+        } else  {
+            // If we don't have at least two options, we automatically show whichever is available (camera or roll)
+            self.shouldPresentPhotoCaptureController()
+        }
+    }
     
     func shouldStartCameraController() -> Bool {
         if(UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera) == false) {
