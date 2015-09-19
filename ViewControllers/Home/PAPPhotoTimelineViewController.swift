@@ -20,15 +20,11 @@ class PAPPhotoTimelineViewController: PFQueryTableViewController, PAPPhotoHeader
     
     required init!(coder aDecoder: NSCoder!) {
         super.init(coder: aDecoder)
-    }
-    
-    override init(style: UITableViewStyle, className: String?) {
-        super.init(style: style, className: className)
         
         self.outstandingSectionHeaderQueries = [Int: Int]()
         
         // The className to query on
-        self.parseClassName = className;
+        self.parseClassName = kPAPPhotoClassKey;
         
         // Whether the built-in pull-to-refresh is enabled
         self.pullToRefreshEnabled = true;

@@ -10,7 +10,7 @@ import UIKit
 
 class PAPHomeViewController: PAPPhotoTimelineViewController {
 
-    var fistLaunch: Bool!
+    var fistLaunch: Bool = false
     var blankTimelineView: UIView!
     //var settingsActionSheetDelegate: PAPSettingsActionSheetDelegate!
 

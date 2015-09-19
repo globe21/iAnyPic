@@ -4,7 +4,7 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
     </dependencies>
     <scenes>
-        <!--Item 2-->
+        <!--Activity-->
         <scene sceneID="75J-Sk-b9K">
             <objects>
                 <viewController id="SoA-2u-7Qg" sceneMemberID="viewController">
@@ -17,41 +17,38 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Item 2" id="9Lw-2c-tQD"/>
+                    <tabBarItem key="tabBarItem" title="Activity" image="IconTimeline" selectedImage="IconTimelineSelected" id="9Lw-2c-tQD"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1ke-DS-qUd" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1267" y="770"/>
+            <point key="canvasLocation" x="1181" y="734"/>
         </scene>
-        <!--HomeViewController-->
-        <scene sceneID="Heb-nS-Eou">
+        <!--Home-->
+        <scene sceneID="3d0-4u-Uwv">
             <objects>
-                <viewController id="gIQ-kj-fkE" userLabel="HomeViewController" customClass="PAPPhotoTimelineViewController" customModule="iAnyPic" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="ySL-kc-hd8"/>
-                        <viewControllerLayoutGuide type="bottom" id="b4M-ae-eoe"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="FCn-xN-f78">
+                <tableViewController id="LPp-5p-gAV" customClass="PAPHomeViewController" customModule="iAnyPic" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="usB-cw-Qhh">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="BackgroundLeather" translatesAutoresizingMaskIntoConstraints="NO" id="uZT-tp-IME">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                            </imageView>
-                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstAttribute="trailing" secondItem="uZT-tp-IME" secondAttribute="trailing" id="2sv-KS-GeX"/>
-                            <constraint firstItem="uZT-tp-IME" firstAttribute="leading" secondItem="FCn-xN-f78" secondAttribute="leading" id="8OM-qz-JeQ"/>
-                            <constraint firstAttribute="bottom" secondItem="uZT-tp-IME" secondAttribute="bottom" id="Vpt-KC-sg9"/>
-                            <constraint firstItem="uZT-tp-IME" firstAttribute="top" secondItem="FCn-xN-f78" secondAttribute="top" id="zLp-HT-5yw"/>
-                        </constraints>
-                    </view>
-                    <tabBarItem key="tabBarItem" title="Item 1" id="G9O-zD-n6X"/>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="qiB-Zu-Jjf" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="PAPHomeViewCell" id="3d8-7q-VCh">
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="3d8-7q-VCh" id="Dwj-Rn-Yvh">
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="LPp-5p-gAV" id="NeI-MX-Pco"/>
+                            <outlet property="delegate" destination="LPp-5p-gAV" id="xoW-oX-WN6"/>
+                        </connections>
+                    </tableView>
+                    <tabBarItem key="tabBarItem" title="Home" image="IconHome" selectedImage="IconHomeSelected" id="g2g-bL-0ZH"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ZoV-3z-3IV" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1266" y="107"/>
+            <point key="canvasLocation" x="1181" y="-66"/>
         </scene>
         <!--Log In View Controller-->
         <scene sceneID="81S-vq-BgU">
@@ -132,7 +129,7 @@
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </tabBar>
                     <connections>
-                        <segue destination="gIQ-kj-fkE" kind="relationship" relationship="viewControllers" id="V1B-lE-Zo0"/>
+                        <segue destination="LPp-5p-gAV" kind="relationship" relationship="viewControllers" id="ZLt-md-pdZ"/>
                         <segue destination="SoA-2u-7Qg" kind="relationship" relationship="viewControllers" id="79C-t2-aPF"/>
                     </connections>
                 </tabBarController>
@@ -142,9 +139,12 @@
         </scene>
     </scenes>
     <resources>
-        <image name="BackgroundLeather" width="80" height="80"/>
         <image name="BackgroundTabBar" width="320" height="49"/>
         <image name="BackgroundTabBarItemSelected" width="81" height="47"/>
         <image name="Default" width="320" height="461"/>
+        <image name="IconHome" width="27" height="27"/>
+        <image name="IconHomeSelected" width="27" height="27"/>
+        <image name="IconTimeline" width="33" height="29"/>
+        <image name="IconTimelineSelected" width="33" height="29"/>
     </resources>
 </document>

@@ -67,7 +67,7 @@ class PAPPhotoHeaderView: UIView {
     }
     
     /// The bitmask which specifies the enabled interaction elements in the view
-    var buttons: PAPPhotoHeaderButtons
+    var headerButtons: PAPPhotoHeaderButtons
     
     /*! @name Accessing Interaction Elements */
     
@@ -96,6 +96,9 @@ class PAPPhotoHeaderView: UIView {
     var timeIntervalFormatter: TTTTimeIntervalFormatter
     
     required init(coder aDecoder: NSCoder) {
+        timeIntervalFormatter = TTTTimeIntervalFormatter()
+        headerButtons = PAPPhotoHeaderButtons.Like | PAPPhotoHeaderButtons.Comment | PAPPhotoHeaderButtons.User
+        
         super.init(coder: aDecoder)
         
         self.avatarImageView.profileButton.addTarget(self, action: "didTapUserButtonAction:", forControlEvents: UIControlEvents.TouchUpInside)
@@ -121,6 +124,9 @@ class PAPPhotoHeaderView: UIView {
     @param buttons A bitmask specifying the interaction elements which are enabled in the view
     */
     init(frame: CGRect, buttons: PAPPhotoHeaderButtons) {
+        timeIntervalFormatter = TTTTimeIntervalFormatter()
+        headerButtons = buttons
+
         super.init(frame: frame)
         
     }
@@ -166,15 +172,15 @@ class PAPPhotoHeaderView: UIView {
             let authorName = user.objectForKey(kPAPUserDisplayNameKey) as? String
             self.userButton.setTitle(authorName, forState: UIControlState.Normal)
             
-            if(self.buttons & .User == .User) {
+            if(self.headerButtons & .User == .User) {
                 self.userButton.addTarget(self, action: "didTapUserButtonAction:", forControlEvents: UIControlEvents.TouchUpInside)
             }
             
-            if (self.buttons & .Comment == .Comment) {
+            if (self.headerButtons & .Comment == .Comment) {
                 self.commentButton.addTarget(self, action: "didTapCommentButtonAction:", forControlEvents: UIControlEvents.TouchUpInside)
             }
             
-            if (self.buttons & .Like == .Like) {
+            if (self.headerButtons & .Like == .Like) {
                 self.likeButton.addTarget(self, action: "didTapLikeButtonAction:", forControlEvents: UIControlEvents.TouchUpInside)
             }
             

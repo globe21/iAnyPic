@@ -37,7 +37,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate,  PFLogInViewControllerDel
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         
         // Enable local Datastore
-        Parse.enableLocalDatastore()
+        // Parse.enableLocalDatastore()
 
         // Parse Initialization
         Parse.setApplicationId(applicationID, clientKey: clientKey)

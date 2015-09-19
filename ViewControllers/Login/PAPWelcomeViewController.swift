@@ -17,7 +17,6 @@ class PAPWelcomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        PFUser.logOut()
     }
 
     override func didReceiveMemoryWarning() {

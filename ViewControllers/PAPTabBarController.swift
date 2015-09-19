@@ -28,8 +28,6 @@ class PAPTabBarController: UITabBarController, UIImagePickerControllerDelegate, 
         swipeUpGestureRecognizer.direction = UISwipeGestureRecognizerDirection.Up
         swipeUpGestureRecognizer.numberOfTouchesRequired = 1
         cameraButton.addGestureRecognizer(swipeUpGestureRecognizer)
-
-        //[PAPUtility addBottomDropShadowToNavigationBarForNavigationController:];
     }
 
     override func didReceiveMemoryWarning() {
@@ -65,12 +63,11 @@ class PAPTabBarController: UITabBarController, UIImagePickerControllerDelegate, 
         self.dismissViewControllerAnimated(false, completion: nil)
         
         if let image = info[UIImagePickerControllerEditedImage] as? UIImage {
-//            var editPhotoViewController = PAPEditPhotoViewController(anImage: image)
-//            editPhotoViewController.modalTransitionStyle = UIModalTransitionStyle.CrossDissolve
-//            
-//            self.navController.modalTransitionStyle = UIModalTransitionStyle.CrossDissolve
-//            self.navController.pushViewController(editPhotoViewController, animated: false)
-//            self.presentViewController(self.navController, animated: true, completion: nil)
+            var editPhotoViewController = PAPEditPhotoViewController(image: image)
+            editPhotoViewController.modalTransitionStyle = UIModalTransitionStyle.CrossDissolve
+            
+            self.navigationController!.modalTransitionStyle = UIModalTransitionStyle.CrossDissolve
+            self.navigationController!.pushViewController(editPhotoViewController, animated: false)
         }
     }
     
