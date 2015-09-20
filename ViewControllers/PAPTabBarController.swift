@@ -29,6 +29,10 @@ class PAPTabBarController: UITabBarController, UIImagePickerControllerDelegate, 
         swipeUpGestureRecognizer.numberOfTouchesRequired = 1
         cameraButton.addGestureRecognizer(swipeUpGestureRecognizer)
     }
+    
+    override func viewWillAppear(animated: Bool) {
+        self.navigationController?.navigationBarHidden = true
+    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -66,8 +70,9 @@ class PAPTabBarController: UITabBarController, UIImagePickerControllerDelegate, 
             var editPhotoViewController = PAPEditPhotoViewController(image: image)
             editPhotoViewController.modalTransitionStyle = UIModalTransitionStyle.CrossDissolve
             
-            self.navigationController!.modalTransitionStyle = UIModalTransitionStyle.CrossDissolve
-            self.navigationController!.pushViewController(editPhotoViewController, animated: false)
+            self.navigationController?.modalTransitionStyle = UIModalTransitionStyle.CrossDissolve
+            self.navigationController?.pushViewController(editPhotoViewController, animated: false)
+            self.navigationController?.navigationBarHidden = false
         }
     }
     

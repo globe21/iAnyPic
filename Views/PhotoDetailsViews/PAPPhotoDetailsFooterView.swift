@@ -22,14 +22,11 @@ class PAPPhotoDetailsFooterView: UIView {
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         
-        //NSBundle.mainBundle().loadNibNamed("PAPPhotoDetailsFooterView", owner: self, options: nil)
+        self.backgroundColor = UIColor.clearColor()
         
-        // Add as subview
-        //self.addSubview(self.mainView)
-        
-        // Allow for autolayout
-        //self.mainView.setTranslatesAutoresizingMaskIntoConstraints(true)
-        
+        if let footerView = NSBundle.mainBundle().loadNibNamed("PAPPhotoDetailsFooterView", owner: self, options: nil)[0] as? UIView {
+            self.addSubview(footerView)
+        }
     }
     
     // MARK: - UIView
