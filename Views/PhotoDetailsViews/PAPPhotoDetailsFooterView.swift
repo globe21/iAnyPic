@@ -14,19 +14,39 @@ class PAPPhotoDetailsFooterView: UIView {
     @IBOutlet var messageIcon: UIImageView!
     @IBOutlet var commentBox: UIImageView!
     @IBOutlet var commentField: UITextField!
+
+    var view: UIView!
     
     var hideDropShadow: Bool = false
     
     // MARK: - NSObject
     
-    required init(coder aDecoder: NSCoder) {
+    func loadViewFromNib() -> UIView {
+        let bundle = NSBundle(forClass: self.dynamicType)
+        let nib = UINib(nibName: "PAPPhotoDetailsFooterView", bundle: bundle)
+        let view = nib.instantiateWithOwner(self, options: nil)[0] as! UIView
+        
+        return view
+    }
+    
+    func setupNib() {
+        self.view = loadViewFromNib()
+        self.view.frame = self.bounds
+        self.view.autoresizingMask = UIViewAutoresizing.FlexibleWidth.union(UIViewAutoresizing.FlexibleHeight)
+        
+        self.addSubview(self.view)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         
-        self.backgroundColor = UIColor.clearColor()
+        self.setupNib()
+    }
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         
-        if let footerView = NSBundle.mainBundle().loadNibNamed("PAPPhotoDetailsFooterView", owner: self, options: nil)[0] as? UIView {
-            self.addSubview(footerView)
-        }
+        self.setupNib()
     }
     
     // MARK: - UIView
