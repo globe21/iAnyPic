@@ -11,17 +11,17 @@ import Parse
 
 // We create our own NS_OPTIONS Bitmask Generator
 // http://natecook.com/blog/2014/07/swift-options-bitmask-generator/
-struct PAPPhotoHeaderButtons : RawOptionSetType {
+struct PAPPhotoHeaderButtons : OptionSetType {
     typealias RawValue = UInt
     private var value: UInt = 0
     init(_ value: UInt) { self.value = value }
     init(rawValue value: UInt) { self.value = value }
     init(nilLiteral: ()) { self.value = 0 }
-    static var allZeros: PAPPhotoHeaderButtons { return self(0) }
-    static func fromMask(raw: UInt) -> PAPPhotoHeaderButtons { return self(raw) }
+    static var allZeros: PAPPhotoHeaderButtons { return self.init(0) }
+    static func fromMask(raw: UInt) -> PAPPhotoHeaderButtons { return self.init(raw) }
     var rawValue: UInt { return self.value }
     
-    static var None: PAPPhotoHeaderButtons { return self(0) }
+    static var Default: PAPPhotoHeaderButtons { return self.init(0) }
     static var Like: PAPPhotoHeaderButtons { return PAPPhotoHeaderButtons(1 << 0) }
     static var Comment: PAPPhotoHeaderButtons { return PAPPhotoHeaderButtons(1 << 1) }
     static var User: PAPPhotoHeaderButtons { return PAPPhotoHeaderButtons(1 << 2) }
@@ -53,15 +53,14 @@ All methods of the protocol are optional.
     optional func photoHeaderView(photoHeaderView: PAPPhotoHeaderView, didTapCommentOnPhotoButton button: UIButton, photo: PFObject)
 }
 
+@IBDesignable
 class PAPPhotoHeaderView: UIView {
+    
+    var view: UIView!
     
     /// The photo associated with this view
     var photo: PFObject? {
-        get {
-            return self.photo
-        }
-        set {
-            self.photo = newValue
+        didSet {
             self.didSetPhoto()
         }
     }
@@ -80,9 +79,6 @@ class PAPPhotoHeaderView: UIView {
     /*! @name Delegate */
     var delegate: PAPPhotoHeaderViewDelegate?
     
-    /// The Container View
-    @IBOutlet var containerView: UIView!
-    
     /// The Avatar Image View
     @IBOutlet var avatarImageView: PAPProfileImageView!
     
@@ -95,40 +91,53 @@ class PAPPhotoHeaderView: UIView {
     // The time interval formatter
     var timeIntervalFormatter: TTTTimeIntervalFormatter
     
-    required init(coder aDecoder: NSCoder) {
+    // MARK: - Initialization
+    
+    func loadViewFromNib() -> UIView {
+        let bundle = NSBundle(forClass: self.dynamicType)
+        let nib = UINib(nibName: "PAPPhotoHeaderView", bundle: bundle)
+        let view = nib.instantiateWithOwner(self, options: nil)[0] as! UIView
+        
+        return view
+    }
+    
+    func setupNib() {
+        self.view = loadViewFromNib()
+        self.view.frame = self.bounds
+        self.view.autoresizingMask = UIViewAutoresizing.FlexibleWidth.union(UIViewAutoresizing.FlexibleHeight)
+        
+        self.addSubview(self.view)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
         timeIntervalFormatter = TTTTimeIntervalFormatter()
-        headerButtons = PAPPhotoHeaderButtons.Like | PAPPhotoHeaderButtons.Comment | PAPPhotoHeaderButtons.User
+        headerButtons = [PAPPhotoHeaderButtons.Like, PAPPhotoHeaderButtons.Comment, PAPPhotoHeaderButtons.User]
         
         super.init(coder: aDecoder)
         
-        self.avatarImageView.profileButton.addTarget(self, action: "didTapUserButtonAction:", forControlEvents: UIControlEvents.TouchUpInside)
-
-        self.timeIntervalFormatter = TTTTimeIntervalFormatter()
+        self.setupNib()
         
-        // To-Do: Add user button to username label
-                
-//        CALayer *layer = [containerView layer];
-//        layer.backgroundColor = [[UIColor whiteColor] CGColor];
-//        layer.masksToBounds = NO;
-//        layer.shadowRadius = 1.0f;
-//        layer.shadowOffset = CGSizeMake( 0.0f, 2.0f);
-//        layer.shadowOpacity = 0.5f;
-//        layer.shouldRasterize = YES;
-//        layer.shadowPath = [UIBezierPath bezierPathWithRect:CGRectMake( 0.0f, containerView.frame.size.height - 4.0f, containerView.frame.size.width, 4.0f)].CGPath;
+        //self.avatarImageView.profileButton.addTarget(self, action: "didTapUserButtonAction:", forControlEvents: UIControlEvents.TouchUpInside)
+    }
+    
+    override init(frame: CGRect) {
+        headerButtons = PAPPhotoHeaderButtons.Default
+        timeIntervalFormatter = TTTTimeIntervalFormatter()
+        
+        super.init(frame: frame)
         
     }
     
     /*! @name Creating Photo Header View */
     /*!
-    Initializes the view with the specified interaction elements.
-    @param buttons A bitmask specifying the interaction elements which are enabled in the view
+        Initializes the view with the specified interaction elements.
+        @param buttons A bitmask specifying the interaction elements which are enabled in the view
     */
-    init(frame: CGRect, buttons: PAPPhotoHeaderButtons) {
-        timeIntervalFormatter = TTTTimeIntervalFormatter()
-        headerButtons = buttons
-
-        super.init(frame: frame)
+    convenience init(frame: CGRect, buttons: PAPPhotoHeaderButtons) {
+        self.init(frame: frame)
         
+        self.headerButtons = buttons
+        self.setupNib()
     }
     
     /*! @name Modifying Interaction Elements Status */
@@ -172,20 +181,20 @@ class PAPPhotoHeaderView: UIView {
             let authorName = user.objectForKey(kPAPUserDisplayNameKey) as? String
             self.userButton.setTitle(authorName, forState: UIControlState.Normal)
             
-            if(self.headerButtons & .User == .User) {
+            if(self.headerButtons.intersect(.User) == .User) {
                 self.userButton.addTarget(self, action: "didTapUserButtonAction:", forControlEvents: UIControlEvents.TouchUpInside)
             }
             
-            if (self.headerButtons & .Comment == .Comment) {
+            if (self.headerButtons.intersect(.Comment) == .Comment) {
                 self.commentButton.addTarget(self, action: "didTapCommentButtonAction:", forControlEvents: UIControlEvents.TouchUpInside)
             }
             
-            if (self.headerButtons & .Like == .Like) {
+            if (self.headerButtons.intersect(.Like) == .Like) {
                 self.likeButton.addTarget(self, action: "didTapLikeButtonAction:", forControlEvents: UIControlEvents.TouchUpInside)
             }
             
             // we resize the button to fit the user's name to avoid having a huge touch area
-//            CGPoint userButtonPoint = CGPointMake(50.0f, 6.0f);
+//            CGPoint u≥serButtonPoint = CGPointMake(50.0f, 6.0f);
 //            constrainWidth -= userButtonPoint.x;
 //            CGSize constrainSize = CGSizeMake(constrainWidth, containerView.bounds.size.height - userButtonPoint.y*2.0f);
 //            CGSize userButtonSize = [self.userButton.titleLabel.text sizeWithFont:self.userButton.titleLabel.font constrainedToSize:constrainSize lineBreakMode:UILineBreakModeTailTruncation];
@@ -202,7 +211,7 @@ class PAPPhotoHeaderView: UIView {
     // MARK: - ()
     
     class func validateButtons(buttons: PAPPhotoHeaderButtons) {
-        if(buttons == PAPPhotoHeaderButtons.None) {
+        if(buttons == PAPPhotoHeaderButtons.Default) {
             NSException.raise(NSInvalidArgumentException, format: "Buttons must be set before initializing PAPPhotoHeaderView", arguments: getVaList(["nil"]))
         }
     }
@@ -213,11 +222,11 @@ class PAPPhotoHeaderView: UIView {
         }
     }
     
-    func didTapLikePhotoButtonAction(sender: UIButton) {
+    func didTapLikeButtonAction(sender: UIButton) {
         self.delegate?.photoHeaderView?(self, didTapLikePhotoButton: sender, photo: self.photo!)
     }
     
-    func didTapCommentOnPhotoButtonAction(sender: UIButton) {
+    func didTapCommentButtonAction(sender: UIButton) {
         self.delegate?.photoHeaderView?(self, didTapCommentOnPhotoButton: sender, photo: self.photo!)
     }
 
