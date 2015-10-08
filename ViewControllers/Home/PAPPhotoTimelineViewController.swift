@@ -12,33 +12,50 @@ import ParseUI
 
 class PAPPhotoTimelineViewController: PFQueryTableViewController, PAPPhotoHeaderViewDelegate {
     
+    let CellIdentifier = "Cell"
+    //
+    let LoadMoreCellIdentifier = "LoadMoreCell"
+    
     var shouldReloadOnAppear: Bool = true
+    //
     var reusableSectionHeaderViews : Set<PAPPhotoHeaderView>!
+    //
     var outstandingSectionHeaderQueries : [Int: Int]!
     
     // MARK: - Initialization
     
-    required init!(coder aDecoder: NSCoder!) {
+    required init!(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+        setupController()
+    }
+    
+    override init(style: UITableViewStyle, className: String?) {
+        super.init(style: style, className: className)
+        setupController()
+    }
+    
+    func setupController() {
         
-        self.outstandingSectionHeaderQueries = [Int: Int]()
+        reusableSectionHeaderViews = Set<PAPPhotoHeaderView>()
+
+        outstandingSectionHeaderQueries = [Int: Int]()
         
         // The className to query on
-        self.parseClassName = kPAPPhotoClassKey;
+        parseClassName = kPAPPhotoClassKey;
         
         // Whether the built-in pull-to-refresh is enabled
-        self.pullToRefreshEnabled = true;
+        pullToRefreshEnabled = true;
         
         // Whether the built-in pagination is enabled
-        self.paginationEnabled = true;
+        paginationEnabled = true;
         
         // The number of objects to show per page
-        self.objectsPerPage = 10;
+        objectsPerPage = 10;
         
         // Improve scrolling performance by reusing UITableView section headers
-        self.reusableSectionHeaderViews = Set<PAPPhotoHeaderView>()
+        reusableSectionHeaderViews = Set<PAPPhotoHeaderView>()
         
-        self.shouldReloadOnAppear = false;
+        shouldReloadOnAppear = false;
     }
     
     deinit {
@@ -46,6 +63,16 @@ class PAPPhotoTimelineViewController: PFQueryTableViewController, PAPPhotoHeader
     }
     
     // MARK: - UIViewController
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        let texturedBackgroundView = UIView(frame: self.view.bounds)
+        texturedBackgroundView.backgroundColor = UIColor(patternImage: UIImage(named: "BackgroundLeather.png")!)
+        self.tableView.backgroundView = texturedBackgroundView
+        
+        self.registerNotification()
+    }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(true)
@@ -56,15 +83,7 @@ class PAPPhotoTimelineViewController: PFQueryTableViewController, PAPPhotoHeader
         }
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        self.tableView.separatorStyle = UITableViewCellSeparatorStyle.None
-        
-        //        UIView *texturedBackgroundView = [[UIView alloc] initWithFrame:self.view.bounds];
-        //        texturedBackgroundView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"BackgroundLeather.png"]];
-        //        self.tableView.backgroundView = texturedBackgroundView;
-        
+    func registerNotification() {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "userDidPublishPhoto:", name: PAPTabBarControllerDidFinishEditingPhotoNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector:"userFollowingChanged:", name:PAPUtilityUserFollowingChangedNotification, object:nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector:"userDidDeletePhoto", name:PAPPhotoDetailsViewControllerUserDeletedPhotoNotification, object:nil)
@@ -72,7 +91,6 @@ class PAPPhotoTimelineViewController: PFQueryTableViewController, PAPPhotoHeader
         NSNotificationCenter.defaultCenter().addObserver(self, selector:"userDidLikeOrUnlikePhoto", name:PAPUtilityUserLikedUnlikedPhotoCallbackFinishedNotification, object:nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector:"userDidCommentOnPhoto", name:PAPPhotoDetailsViewControllerUserCommentedOnPhotoNotification, object:nil)
     }
-
 
     // MARK: - UITableViewDataSource
     
@@ -96,19 +114,106 @@ class PAPPhotoTimelineViewController: PFQueryTableViewController, PAPPhotoHeader
     
     override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         if section == self.objects?.count {
+            // Load more sections
             return nil
         }
         
-        let headerView = self.dequeueReusableSectionHeaderView()
+        var headerView = self.dequeueReusableSectionHeaderView()
         if headerView == nil {
-            //headerView = PAPPhotoHeaderView(frame: <#CGRect#>, buttons: <#PAPPhotoHeaderButtons#>)
+            headerView = PAPPhotoHeaderView(frame: CGRectMake(0.0, 0.0, self.view.bounds.size.width, 44.0), buttons: [PAPPhotoHeaderButtons.Like, PAPPhotoHeaderButtons.Comment, PAPPhotoHeaderButtons.User])
+            headerView?.delegate = self
+            self.reusableSectionHeaderViews.insert(headerView!)
         }
         
-        //let photo = self.objects.
+        let photo = self.objects?[section] as? PFObject
+        headerView?.photo = photo
+        headerView?.tag = section
+        headerView?.likeButton.tag = section
         
-        //To-Do: not finished
+        let attributesForPhoto = PAPCache.sharedCache().attributesForPhoto(photo)
         
-        return nil
+        if(attributesForPhoto != nil) {
+            headerView?.setLikeStatus(PAPCache.sharedCache().isPhotoLikedByCurrentUser(photo))
+            headerView?.likeButton.setTitle(PAPCache.sharedCache().likeCountForPhoto(photo).description, forState: UIControlState.Normal)
+            headerView?.commentButton.setTitle(PAPCache.sharedCache().commentCountForPhoto(photo).description, forState: UIControlState.Normal)
+            
+            if(headerView?.likeButton.alpha < 1.0 || headerView?.commentButton.alpha < 1.0) {
+                UIView.animateWithDuration(0.2, animations: { () -> Void in
+                    headerView?.likeButton.alpha = 1.0
+                    headerView?.commentButton.alpha = 1.0
+                })
+            }
+            
+        } else {
+            
+            headerView?.likeButton.alpha = 0.0
+            headerView?.commentButton.alpha = 0.0
+            
+            let lockQueue = dispatch_queue_create("com.iAnyPic.LockQueue", nil)
+            dispatch_sync(lockQueue) {
+                
+                let outstandingSectionHeaderQueryStatus = self.outstandingSectionHeaderQueries[section]
+                if(outstandingSectionHeaderQueryStatus == nil) {
+                    let query = PAPUtility.queryForActivitiesOnPhoto(photo, cachePolicy: PFCachePolicy.NetworkOnly)
+                    query.findObjectsInBackgroundWithBlock({ (objects, error) -> Void in
+                        let lockQueue2 = dispatch_queue_create("com.iAnyPic.LockQueue2", nil)
+                        dispatch_sync(lockQueue2) {
+                            self.outstandingSectionHeaderQueries.removeValueForKey(section)
+                            
+                            if(error != nil) {
+                                return
+                            }
+                            
+                            var likers = [PFUser]()
+                            var commenters = [PFUser]()
+                            
+                            var isLikedByCurrentUser = false
+                            
+                            for object in objects! {
+                                if let activity = object as? PFObject {
+                                    if(activity.objectForKey(kPAPActivityTypeKey)!.isEqualToString(kPAPActivityTypeLike)  && activity.objectForKey(kPAPActivityFromUserKey) != nil) {
+                                        let user = activity.objectForKey(kPAPActivityFromUserKey) as! PFUser
+                                        likers.append(user)
+                                    } else if (activity.objectForKey(kPAPActivityTypeKey)!.isEqualToString(kPAPActivityTypeComment) && activity.objectForKey(kPAPActivityFromUserKey) != nil) {
+                                        let commenter = activity.objectForKey(kPAPActivityFromUserKey) as! PFUser
+                                        commenters.append(commenter)
+                                    }
+                                    
+                                    let user = activity.objectForKey(kPAPActivityFromUserKey) as! PFUser
+                                    if(user.objectId! == PFUser.currentUser()!.objectId!) {
+                                        if(activity.objectForKey(kPAPActivityTypeKey)!.isEqualToString(kPAPActivityTypeLike)) {
+                                            isLikedByCurrentUser = true
+                                        }
+                                    }
+                                }
+                            }
+                            
+                            PAPCache.sharedCache().setAttributesForPhoto(photo, likers: likers, commenters: commenters, likedByCurrentUser: isLikedByCurrentUser)
+                            
+                            if (headerView?.tag != section) {
+                                return;
+                            }
+                            
+                            headerView?.setLikeStatus(PAPCache.sharedCache().isPhotoLikedByCurrentUser(photo))
+                            headerView?.likeButton.setTitle(PAPCache.sharedCache().likeCountForPhoto(photo).description, forState: UIControlState.Normal)
+                            
+                            headerView?.commentButton.setTitle(PAPCache.sharedCache().commentCountForPhoto(photo).description, forState:UIControlState.Normal)
+                            
+                            if (headerView?.likeButton.alpha < 1.0 || headerView?.commentButton.alpha < 1.0) {
+                                UIView.animateWithDuration(0.2, animations: { () -> Void in
+                                    headerView?.likeButton.alpha = 1.0
+                                    headerView?.commentButton.alpha = 1.0
+                                })
+                            }
+
+                        }
+                    })
+                }
+            }
+
+        }
+        
+        return headerView
     }
     
     override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -156,7 +261,7 @@ class PAPPhotoTimelineViewController: PFQueryTableViewController, PAPPhotoHeader
     
     override func queryForTable() -> PFQuery {
         if PFUser.currentUser() == nil {
-            var query = PFQuery(className: self.parseClassName!)
+            let query = PFQuery(className: self.parseClassName!)
             query.limit = 0
             return query
         }
@@ -208,19 +313,50 @@ class PAPPhotoTimelineViewController: PFQueryTableViewController, PAPPhotoHeader
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath, object: PFObject?) -> PFTableViewCell? {
-    
-        return nil
+        
+        if(indexPath.section == self.objects?.count) {
+            // this behavior is normally handled by PFQueryTableViewController, but we are using sections for each object and we must handle this ourselves
+            return self.tableView(tableView, cellForNextPageAtIndexPath: indexPath)
+        } else {
+            var cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier) as? PAPPhotoCell
+            
+            if(cell == nil) {
+                cell = PAPPhotoCell(style: UITableViewCellStyle.Default, reuseIdentifier: CellIdentifier)
+                cell!.photoButton.addTarget(self, action: "didTapOnPhotoAction:", forControlEvents: UIControlEvents.TouchUpInside)
+            }
+            
+            cell!.photoButton.tag = indexPath.section
+            cell!.imageView?.image = UIImage(named: "PlaceholderPhoto")
+            cell!.imageView?.file = object?.objectForKey(kPAPPhotoPictureKey) as? PFFile
+            
+            // PFQTVC will take care of asynchronously downloading files, but will only load them when the tableview is not moving. If the data is there, let's load it right away.
+            if(cell!.imageView!.file!.isDataAvailable) {
+                cell?.imageView?.loadInBackground()
+            }
+            
+            return cell
+        }
     }
     
-    override func tableView(tableView: UITableView, cellForNextPageAtIndexPath indexPath: NSIndexPath) -> PFTableViewCell? {
-        return nil
-    }
+//    override func tableView(tableView: UITableView, cellForNextPageAtIndexPath indexPath: NSIndexPath) -> PFTableViewCell? {
+//        var cell = tableView.dequeueReusableCellWithIdentifier(LoadMoreCellIdentifier) as? PAPLoadMoreCell
+//        if(cell == nil) {
+//            cell = PAPLoadMoreCell.init(style: UITableViewCellStyle.Default, reuseIdentifier: LoadMoreCellIdentifier)
+//            cell!.selectionStyle = UITableViewCellSelectionStyle.Gray
+//            cell!.separatorImageTop.image = UIImage(named: "SeparatorTimelineDark")
+//            cell!.hideSeparatorBottom = true
+//            cell!.mainView.backgroundColor = UIColor.clearColor()
+//        }
+//        
+//        return cell
+//    }
     
     // MARK: - PAPPhotoTimelineViewController
     
     func dequeueReusableSectionHeaderView() -> PAPPhotoHeaderView? {
         for sectionHeaderView in self.reusableSectionHeaderViews {
             if sectionHeaderView.superview == nil {
+                // we found a section header that is no longer visible
                 return sectionHeaderView
             }
         }
@@ -231,19 +367,18 @@ class PAPPhotoTimelineViewController: PFQueryTableViewController, PAPPhotoHeader
     // MARK: - PAPPhotoHeaderViewDelegate
     
     func photoHeaderView(photoHeaderView: PAPPhotoHeaderView, didTapCommentOnPhotoButton button: UIButton, photo: PFObject) {
-        //        let photoDetailsVC = PAPPhotoDetailsViewController(photo: photo)
-        //        self.navigationController?.pushViewController(photoDetailsVC, animated: true)
+                let photoDetailsVC = PAPPhotoDetailsViewController(photo: photo)
+                self.navigationController?.pushViewController(photoDetailsVC, animated: true)
     }
     
     func photoHeaderView(photoHeaderView: PAPPhotoHeaderView, didTapUserButton button: UIButton, user: PFUser) {
-        // To-Do: Perform segue ??
-//        let accountViewController = PAPAccountViewController(UITableViewStyle.Plain)
-//        accountViewController.user = user
-//        self.navigationController?.pushViewController(accountViewController, animated: true)
+        let accountViewController = PAPAccountViewController(style: UITableViewStyle.Plain, className: kPAPPhotoClassKey)
+        accountViewController.user = user
+        self.navigationController?.pushViewController(accountViewController, animated: true)
     }
     
     func photoHeaderView(photoHeaderView: PAPPhotoHeaderView, didTapLikePhotoButton button: UIButton, photo: PFObject) {
-        print("User did tap like button")
+        print("User did tap like button", terminator: "")
     }
 
     
@@ -287,17 +422,16 @@ class PAPPhotoTimelineViewController: PFQueryTableViewController, PAPPhotoHeader
     }
     
     func userFlollowingChanged(notificaion: NSNotification) {
-        print("User following changed.")
+        print("User following changed.", terminator: "")
         self.shouldReloadOnAppear = true
     }
     
     func didTapOnPhotoAction(sender: UIButton) {
         if let photo = self.objects?[sender.tag] as? PFObject {
-            // To-Do: Perform with segue??
-//            if let navigationController = self.navigationController {
-//                let photoDetailsVC = PAPPhotoDetailsViewController(photo: photo)
-//                navigationController.pushViewController(photoDetailsVC, animated: true)
-//            }
+            if let navigationController = self.navigationController {
+                let photoDetailsVC = PAPPhotoDetailsViewController(photo: photo)
+                navigationController.pushViewController(photoDetailsVC, animated: true)
+            }
             
         }
     }
