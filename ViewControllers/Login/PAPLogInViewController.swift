@@ -18,23 +18,23 @@ class PAPLogInViewController: PFLogInViewController {
 
         // Load background image
         if let backgroundImage = UIImage(named: "Default.png") {
-            var imageView = UIImageView(image: backgroundImage)
+            let imageView = UIImageView(image: backgroundImage)
             imageView.frame = CGRectMake(0, 0, UIScreen.mainScreen().bounds.width, UIScreen.mainScreen().bounds.height)
             imageView.contentMode = UIViewContentMode.ScaleAspectFill
             imageView.clipsToBounds = true
             self.logInView!.insertSubview(imageView, atIndex: 0)
         }
         
-        var text = "Sign up and start sharing your story with your friends."
+        let text = "Sign up and start sharing your story with your friends."
         
         // Get the size of the text
-        var maximumLabelSize = CGSizeMake(255.0, CGFloat.max)
-        var options = NSStringDrawingOptions.TruncatesLastVisibleLine | NSStringDrawingOptions.UsesLineFragmentOrigin
-        var attribute = [NSFontAttributeName: UIFont.systemFontOfSize(15)]
-        var labelBounds = text.boundingRectWithSize(maximumLabelSize, options: options, attributes: attribute, context: nil)
+        let maximumLabelSize = CGSizeMake(255.0, CGFloat.max)
+        let options: NSStringDrawingOptions = [NSStringDrawingOptions.TruncatesLastVisibleLine, NSStringDrawingOptions.UsesLineFragmentOrigin]
+        let attribute = [NSFontAttributeName: UIFont.systemFontOfSize(15)]
+        let labelBounds = text.boundingRectWithSize(maximumLabelSize, options: options, attributes: attribute, context: nil)
         
         // Init text label
-        var textLabel = UILabel(frame: CGRectMake( (UIScreen.mainScreen().bounds.size.width - labelBounds.width) / 2.0, 260.0, labelBounds.width, labelBounds.height))
+        let textLabel = UILabel(frame: CGRectMake( (UIScreen.mainScreen().bounds.size.width - labelBounds.width) / 2.0, 260.0, labelBounds.width, labelBounds.height))
         textLabel.font = UIFont(name: "HelveticaNeue-Medium", size: 18.0)
         textLabel.lineBreakMode = NSLineBreakMode.ByWordWrapping
         textLabel.numberOfLines = 0

@@ -80,7 +80,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate,  PFLogInViewControllerDel
         return FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
     }
     
-    func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject?) -> Bool {
+    func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
         return FBSDKApplicationDelegate.sharedInstance().application(application, openURL: url, sourceApplication: sourceApplication, annotation: annotation)
     }
 
@@ -112,7 +112,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate,  PFLogInViewControllerDel
     func logInViewController(logInController: PFLogInViewController, didLogInUser user: PFUser) {
         // user has logged in - we need to fetch all of their Facebook data before we let them in
         if (!self.shouldProceedToMainInterface(user)) {
-            var hud = MBProgressHUD.showHUDAddedTo(self.rootNavController.visibleViewController.view, animated: true)
+            let hud = MBProgressHUD.showHUDAddedTo(self.rootNavController.visibleViewController!.view, animated: true)
             hud.labelText = "Loading"
             hud.dimBackground = true
         }
@@ -122,7 +122,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate,  PFLogInViewControllerDel
             let graphRequest = FBSDKGraphRequest(graphPath: "me", parameters: ["fields" : "name,email,friends"])
             graphRequest.startWithCompletionHandler({ (connection, result, error) -> Void in
                 if(error != nil) {
-                    println(error)
+                    print(error)
                 }
                 else {
                     if let userData = result as? NSDictionary {
@@ -164,8 +164,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate,  PFLogInViewControllerDel
         if (PAPUtility.userHasValidFacebookData(user)) {
             //MBProgressHUD.hideHUDForView(self.rootNavController.visibleViewController.view, animated: true)
             
-            self.rootNavController.visibleViewController.dismissViewControllerAnimated(true, completion: { () -> Void in
-                self.rootNavController.visibleViewController.performSegueWithIdentifier("showTabBarController", sender: self)
+            self.rootNavController.visibleViewController!.dismissViewControllerAnimated(true, completion: { () -> Void in
+                self.rootNavController.visibleViewController!.performSegueWithIdentifier("showTabBarController", sender: self)
             })
             
             return true
@@ -186,7 +186,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate,  PFLogInViewControllerDel
     }
 
     func followFacebookFriends(result: AnyObject) {
-        println("To-DO: Follow facebook friends")
+        print("To-DO: Follow facebook friends")
     }
 }
 

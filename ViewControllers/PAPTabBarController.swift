@@ -15,7 +15,7 @@ class PAPTabBarController: UITabBarController, UIImagePickerControllerDelegate, 
         super.viewDidLoad()
         
         // Add camera button to tab bar
-        var cameraButton = UIButton.buttonWithType(UIButtonType.Custom) as! UIButton
+        let cameraButton = UIButton(type: UIButtonType.Custom)
         let cameraButtonWidth = CGFloat(130.0)
         cameraButton.frame = CGRectMake((self.tabBar.bounds.width - cameraButtonWidth)/2.0, 0.0, cameraButtonWidth, self.tabBar.bounds.height)
         cameraButton.setImage(UIImage(named: "ButtonCamera.png"), forState: UIControlState.Normal)
@@ -24,7 +24,7 @@ class PAPTabBarController: UITabBarController, UIImagePickerControllerDelegate, 
         self.tabBar.addSubview(cameraButton)
         
         // Add swipe gesture to the camera button
-        var swipeUpGestureRecognizer = UISwipeGestureRecognizer(target: self, action: "handleGesture:")
+        let swipeUpGestureRecognizer = UISwipeGestureRecognizer(target: self, action: "handleGesture:")
         swipeUpGestureRecognizer.direction = UISwipeGestureRecognizerDirection.Up
         swipeUpGestureRecognizer.numberOfTouchesRequired = 1
         cameraButton.addGestureRecognizer(swipeUpGestureRecognizer)
@@ -41,7 +41,7 @@ class PAPTabBarController: UITabBarController, UIImagePickerControllerDelegate, 
 
     // MARK: - UITabBarController
     
-    override func setViewControllers(viewControllers: [AnyObject], animated: Bool) {
+    override func setViewControllers(viewControllers: [UIViewController]?, animated: Bool) {
         super.setViewControllers(viewControllers, animated: animated)
         
     }
@@ -63,11 +63,11 @@ class PAPTabBarController: UITabBarController, UIImagePickerControllerDelegate, 
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         self.dismissViewControllerAnimated(false, completion: nil)
         
         if let image = info[UIImagePickerControllerEditedImage] as? UIImage {
-            var editPhotoViewController = PAPEditPhotoViewController(image: image)
+            let editPhotoViewController = PAPEditPhotoViewController(image: image)
             editPhotoViewController.modalTransitionStyle = UIModalTransitionStyle.CrossDissolve
             
             self.navigationController?.modalTransitionStyle = UIModalTransitionStyle.CrossDissolve
@@ -107,11 +107,11 @@ class PAPTabBarController: UITabBarController, UIImagePickerControllerDelegate, 
     }
     
     func photoCaptureButtonAction(sender: AnyObject) {
-        var cameraDeviceAvailable = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
-        var photoLibraryAvailable = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.PhotoLibrary)
+        let cameraDeviceAvailable = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
+        let photoLibraryAvailable = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.PhotoLibrary)
         
         if(cameraDeviceAvailable && photoLibraryAvailable) {
-            var actionSheet = UIActionSheet(title: nil, delegate: self, cancelButtonTitle: "Cancel", destructiveButtonTitle: nil, otherButtonTitles: "Take Photo", "Choose Photo")
+            let actionSheet = UIActionSheet(title: nil, delegate: self, cancelButtonTitle: "Cancel", destructiveButtonTitle: nil, otherButtonTitles: "Take Photo", "Choose Photo")
             actionSheet.showFromTabBar(self.tabBar)
         } else  {
             // If we don't have at least two options, we automatically show whichever is available (camera or roll)
@@ -124,9 +124,9 @@ class PAPTabBarController: UITabBarController, UIImagePickerControllerDelegate, 
             return false
         }
         
-        var cameraUI = UIImagePickerController()
+        let cameraUI = UIImagePickerController()
         
-        cameraUI.mediaTypes = [kUTTypeImage as! String]
+        cameraUI.mediaTypes = [kUTTypeImage as String]
         cameraUI.sourceType = UIImagePickerControllerSourceType.Camera
         
         if(UIImagePickerController.isCameraDeviceAvailable(UIImagePickerControllerCameraDevice.Rear)) {
@@ -148,19 +148,19 @@ class PAPTabBarController: UITabBarController, UIImagePickerControllerDelegate, 
             return false
         }
         
-        var cameraUI = UIImagePickerController()
+        let cameraUI = UIImagePickerController()
         var mediaTypes = UIImagePickerController.availableMediaTypesForSourceType(UIImagePickerControllerSourceType.PhotoLibrary)
         // To-Do: contains?
         
         if(UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.PhotoLibrary)) {
             
             cameraUI.sourceType = UIImagePickerControllerSourceType.PhotoLibrary
-            cameraUI.mediaTypes = [kUTTypeImage as! String]
+            cameraUI.mediaTypes = [kUTTypeImage as String]
             
         } else if (UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.SavedPhotosAlbum) ) {
             
             cameraUI.sourceType = UIImagePickerControllerSourceType.SavedPhotosAlbum
-            cameraUI.mediaTypes = [kUTTypeImage as! String]
+            cameraUI.mediaTypes = [kUTTypeImage as String]
             
         } else {
             return false

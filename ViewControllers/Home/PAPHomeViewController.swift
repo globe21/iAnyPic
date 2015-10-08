@@ -25,13 +25,11 @@ class PAPHomeViewController: PAPPhotoTimelineViewController {
         
         self.blankTimelineView = UIView(frame: self.tableView.bounds)
         
-        let button = UIButton.buttonWithType(UIButtonType.Custom) as! UIButton
+        let button = UIButton(type: UIButtonType.Custom)
         button.frame = CGRectMake(33.0, 96.0, 253.0, 173.0)
         button.setBackgroundImage(UIImage(named: "HomeTimelineBlank.png"), forState: UIControlState.Normal)
         button.addTarget(self, action: "inviteFriendsButtonAction:", forControlEvents: UIControlEvents.TouchUpInside)
         self.blankTimelineView.addSubview(button)
-        
-        
     }
 
     override func didReceiveMemoryWarning() {

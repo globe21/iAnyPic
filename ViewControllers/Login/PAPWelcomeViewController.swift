@@ -67,7 +67,7 @@ class PAPWelcomeViewController: UIViewController {
         }
         
         if segue.identifier == "showTabBarController" {
-            print("sss")
+            print("sss", terminator: "")
         }
         
     }
@@ -77,7 +77,7 @@ class PAPWelcomeViewController: UIViewController {
     func refreshCurrentUserCallbackWithResult(refreshedObject: PFObject?, error: NSError?) {
         // A kPFErrorObjectNotFound error on currentUser refresh singals a deleted user
         if(error != nil && error!.code == PFErrorCode.ErrorObjectNotFound.rawValue) {
-            println("User does not exist.")
+            print("User does not exist.")
             let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
             //appDelegate.logOut()
             return
