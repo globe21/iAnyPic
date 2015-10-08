@@ -26,7 +26,7 @@ class PAPEditPhotoViewController: UIViewController, UITextFieldDelegate, UIScrol
     var photoPostBackgroundTaskId: UIBackgroundTaskIdentifier = UIBackgroundTaskInvalid
     
     // MARK: - NSObject
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         
         if let view = NSBundle.mainBundle().loadNibNamed("PAPEditPhotoView", owner: self, options: nil)[0] as? UIView {
@@ -57,7 +57,7 @@ class PAPEditPhotoViewController: UIViewController, UITextFieldDelegate, UIScrol
 
         self.photoImageView.image = self.image
         
-        var layer = photoImageView.layer
+        let layer = photoImageView.layer
         layer.masksToBounds = false
         layer.shadowRadius = 3.0
         layer.shadowOffset = CGSizeMake(0.0, 2.0)
@@ -103,36 +103,36 @@ class PAPEditPhotoViewController: UIViewController, UITextFieldDelegate, UIScrol
     // MARK: - ()
     
     func shouldUploadImage(anImage: UIImage) -> Bool {
-        let resizedImage = anImage.resizedImageWithContentMode(UIViewContentMode.ScaleAspectFit, bounds: CGSizeMake(560.0, 560.0), interpolationQuality: kCGInterpolationHigh)
-        let thumbnaimImage = anImage.thumbnailImage(86, transparentBorder: 0, cornerRadius: 10, interpolationQuality: kCGInterpolationDefault)
+        let resizedImage = anImage.resizedImageWithContentMode(UIViewContentMode.ScaleAspectFit, bounds: CGSizeMake(560.0, 560.0), interpolationQuality: CGInterpolationQuality.High)
+        let thumbnaimImage = anImage.thumbnailImage(86, transparentBorder: 0, cornerRadius: 10, interpolationQuality: CGInterpolationQuality.Default)
         
         // JPEG to decrease file size and enable faster uploads & downloads
         let imageData = UIImageJPEGRepresentation(resizedImage, 0.8)
         let thumnailImageData = UIImagePNGRepresentation(thumbnaimImage)
         
-        self.photoFile = PFFile(data: imageData)
-        self.thumbnailFile = PFFile(data: thumnailImageData)
+        self.photoFile = PFFile(data: imageData!)
+        self.thumbnailFile = PFFile(data: thumnailImageData!)
         
         // Request a background execution task to allow us to finish uploading the photo even if the app is backgrouned
         self.fileUploadBackgroundTaskId = UIApplication.sharedApplication().beginBackgroundTaskWithExpirationHandler({ () -> Void in
             UIApplication.sharedApplication().endBackgroundTask(self.fileUploadBackgroundTaskId)
         })
         
-        println("Requested background expiration task with id \(self.fileUploadBackgroundTaskId) for Anypic photo upload")
+        print("Requested background expiration task with id \(self.fileUploadBackgroundTaskId) for Anypic photo upload")
         
         self.photoFile?.saveInBackgroundWithBlock({ (succeeded, error) -> Void in
             if(succeeded) {
-                println("Photo uploaded successfully")
+                print("Photo uploaded successfully")
                 self.thumbnailFile?.saveInBackgroundWithBlock({ (succeeded, error) -> Void in
                     if(succeeded) {
-                        println("Thumbnail uploaded successfully.")
+                        print("Thumbnail uploaded successfully.")
                     } else {
-                        println(error)
+                        print(error)
                     }
                     UIApplication.sharedApplication().endBackgroundTask(self.fileUploadBackgroundTaskId)
                 })
             } else {
-                println(error)
+                print(error)
                 UIApplication.sharedApplication().endBackgroundTask(self.fileUploadBackgroundTaskId)
             }
         })
@@ -171,8 +171,8 @@ class PAPEditPhotoViewController: UIViewController, UITextFieldDelegate, UIScrol
     
     func doneButtonAction(button: UIButton) {
         var userInfo = Dictionary<String, String>()
-        var trimmedComment = self.commentTextField.text.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
-        if(count(trimmedComment) != 0) {
+        let trimmedComment = self.commentTextField.text!.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
+        if(trimmedComment.characters.count != 0) {
             userInfo[kPAPEditPhotoViewControllerUserInfoCommentKey] = trimmedComment
         }
         
@@ -184,13 +184,13 @@ class PAPEditPhotoViewController: UIViewController, UITextFieldDelegate, UIScrol
         // both files have finished uploading
         
         // create a photo object
-        var photo = PFObject(className: kPAPPhotoClassKey)
+        let photo = PFObject(className: kPAPPhotoClassKey)
         photo.setObject(PFUser.currentUser()!, forKey: kPAPPhotoUserKey)
         photo.setObject(self.photoFile!, forKey: kPAPPhotoPictureKey)
         photo.setObject(self.thumbnailFile!, forKey: kPAPPhotoThumbnailKey)
         
         // photos are public, but may only be modified by the user who uploaded them
-        var photoACL = PFACL(user: PFUser.currentUser()!)
+        let photoACL = PFACL(user: PFUser.currentUser()!)
         photoACL.setPublicReadAccess(true)
         photoACL.setPublicWriteAccess(false)
         photo.ACL = photoACL
@@ -203,22 +203,22 @@ class PAPEditPhotoViewController: UIViewController, UITextFieldDelegate, UIScrol
         // save
         photo.saveInBackgroundWithBlock { (succeeded, error) -> Void in
             if(succeeded) {
-                println("Photo uploaded")
+                print("Photo uploaded")
                 PAPCache.sharedCache().setAttributesForPhoto(photo, likers: [], commenters: [], likedByCurrentUser: false)
                 
                 // userInfo might contain any caption which might have been posted by the uploader
                 let commentText = userInfo[kPAPEditPhotoViewControllerUserInfoCommentKey]
                 
-                if(commentText != nil && count(commentText!) != 0) {
+                if(commentText != nil && (commentText!).characters.count != 0) {
                     // create and save photo caption
-                    var comment = PFObject(className: kPAPActivityClassKey)
+                    let comment = PFObject(className: kPAPActivityClassKey)
                     comment.setObject(kPAPActivityTypeComment, forKey: kPAPActivityTypeKey)
                     comment.setObject(photo, forKey: kPAPActivityPhotoKey)
                     comment.setObject(PFUser.currentUser()!, forKey: kPAPActivityFromUserKey)
                     comment.setObject(PFUser.currentUser()!, forKey: kPAPActivityToUserKey)
                     comment.setObject(commentText!, forKey: kPAPActivityContentKey)
                     
-                    var ACL = PFACL(user: PFUser.currentUser()!)
+                    let ACL = PFACL(user: PFUser.currentUser()!)
                     ACL.setPublicReadAccess(true)
                     comment.ACL = ACL
                     
@@ -229,7 +229,7 @@ class PAPEditPhotoViewController: UIViewController, UITextFieldDelegate, UIScrol
                 NSNotificationCenter.defaultCenter().postNotificationName(PAPTabBarControllerDidFinishEditingPhotoNotification, object: photo)
                 
             } else {
-                println("Photo failed to save \(error)")
+                print("Photo failed to save \(error)")
                 UIAlertView(title: "Couldn't post your photo", message: nil, delegate: nil, cancelButtonTitle: "Dismiss").show()
             }
             
