@@ -31,7 +31,7 @@ class PAPTabBarController: UITabBarController, UIImagePickerControllerDelegate, 
     }
     
     override func viewWillAppear(animated: Bool) {
-        self.navigationController?.navigationBarHidden = true
+        self.navigationController?.navigationBarHidden = false
     }
 
     override func didReceiveMemoryWarning() {

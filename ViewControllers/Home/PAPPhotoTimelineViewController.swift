@@ -235,7 +235,7 @@ class PAPPhotoTimelineViewController: PFQueryTableViewController, PAPPhotoHeader
             return 0.0
         }
         
-        return 16.0
+        return 0.0
     }
     
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {

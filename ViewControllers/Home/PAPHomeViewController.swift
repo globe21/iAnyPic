@@ -19,8 +19,9 @@ class PAPHomeViewController: PAPPhotoTimelineViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.navigationItem.titleView = UIImageView(image: UIImage(named: "LogoNavigationBar.png"))
-        
+        // Do any additional setup after loading the view.
+        self.navigationItem.hidesBackButton = true
+        self.navigationItem.titleView = UIImageView(image: UIImage(named: "LogoNavigationBar"))
         //self.navigationItem.rightBarButtonItem = PAPSettingsButtonItem(target: self, action: "settingsButtonAction:")
         
         self.blankTimelineView = UIView(frame: self.tableView.bounds)
