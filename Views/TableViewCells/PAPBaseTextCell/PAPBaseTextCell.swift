@@ -8,6 +8,7 @@
 
 import UIKit
 import Parse
+import ParseUI
 
 /*!
 The protocol defines methods a delegate of a PAPBaseTextCell should implement.
@@ -21,28 +22,56 @@ The protocol defines methods a delegate of a PAPBaseTextCell should implement.
     
 }
 
-class PAPBaseTextCell: UITableViewCell {
-    
+class PAPBaseTextCell: PFTableViewCell {
+
+    ///
+    var mainView: UIView!
+
+    ///
     var delegate: PAPBaseTextCellDelegate?
     
+    ///
     var timeFormatter: TTTTimeIntervalFormatter!
     
-    /*! The user represented in the cell */
-    var user: PFUser!
-    
-    /*! The cell's views. These shouldn't be modified but need to be exposed for the subclass */
-    var mainView: UIView!
-    var nameButton: UIButton!
-    var avatarImageButton: UIButton!
-    var avatarImageView: PAPProfileImageView!
-    var contentLabel: UILabel!
-    var timeLabel: UILabel!
+    ///
     var hideSeparator: Bool = false
-    var separatorImage: UIImageView!
     
     /*! The horizontal inset of the cell */
     var cellInsetWidth: CGFloat = 0
-
+    
+    /*! The cell's views. These shouldn't be modified but need to be exposed for the subclass */
+    @IBOutlet var nameButton: UIButton!
+    @IBOutlet var avatarImageButton: UIButton!
+    @IBOutlet var avatarImageView: PAPProfileImageView!
+    @IBOutlet var contentLabel: UILabel!
+    @IBOutlet var timeLabel: UILabel!
+    @IBOutlet var separatorImage: UIImageView!
+    
+    /*! The user represented in the cell */
+    var user: PFUser! {
+        didSet {
+            // Set name button properties and avatar image
+            self.avatarImageView.file = user.objectForKey(kPAPUserProfilePicSmallKey) as? PFFile
+            self.nameButton.setTitle(user.objectForKey(kPAPUserDisplayNameKey) as? String, forState: UIControlState.Normal)
+            self.nameButton.setTitle(user.objectForKey(kPAPUserDisplayNameKey) as? String, forState: UIControlState.Highlighted)
+        }
+    }
+    
+    /*! Date when activity is created */
+    var date: NSDate? {
+        didSet {
+            if(date != nil) {
+                self.timeLabel.text = timeFormatter.stringForTimeInterval(date!.timeIntervalSinceNow)
+            }
+        }
+    }
+    
+    /*! */
+    var contentText: String? {
+        didSet {
+           self.contentLabel.text = contentText
+        }
+    }
 
     // MARK: - NSObject
     
@@ -58,29 +87,34 @@ class PAPBaseTextCell: UITableViewCell {
         self.mainView = loadViewFromNib()
         self.mainView.frame = self.contentView.frame
         self.mainView.autoresizingMask = UIViewAutoresizing.FlexibleWidth.union(UIViewAutoresizing.FlexibleHeight)
-        
         self.contentView.addSubview(self.mainView)
+        
+        // Additional Initialization
+        self.avatarImageButton = self.avatarImageView.profileButton
+        
+        self.timeFormatter = TTTTimeIntervalFormatter()
+        self.mainView.backgroundColor = UIColor(patternImage: UIImage(named: "BackgroundComments.png")!)
     }
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
         setUpNib()
-        
-        self.timeFormatter = TTTTimeIntervalFormatter()
-        
-        self.mainView.backgroundColor = UIColor(patternImage: UIImage(named: "BackgroundComments.png")!)
-        
     }
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        
         setUpNib()
-        self.timeFormatter = TTTTimeIntervalFormatter()
-
+    }
+    
+    // MARK: - UIView
+    
+    override func drawRect(rect: CGRect) {
+        super.drawRect(rect)
+        
     }
 
+    // MARK: - UITableViewCell
+    
     override func setSelected(selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
@@ -90,18 +124,13 @@ class PAPBaseTextCell: UITableViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         
+        // Avatar Image Button
+        
         // Layout the name button
-        let nameSize = self.nameButton.titleLabel?.text.
-        CGSize nameSize = [self.nameButton.titleLabel.text sizeWithFont:[UIFont boldSystemFontOfSize:13] forWidth:nameMaxWidth lineBreakMode:UILineBreakModeTailTruncation];
-        [self.nameButton setFrame:CGRectMake(nameX, nameY, nameSize.width, nameSize.height)];
         
         // Layout the content
-        CGSize contentSize = [self.contentLabel.text sizeWithFont:[UIFont systemFontOfSize:13] constrainedToSize:CGSizeMake(horizontalTextSpace, CGFLOAT_MAX) lineBreakMode:UILineBreakModeWordWrap];
-        [self.contentLabel setFrame:CGRectMake(nameX, vertTextBorderSpacing, contentSize.width, contentSize.height)];
         
         // Layout the timestamp label
-        CGSize timeSize = [self.timeLabel.text sizeWithFont:[UIFont systemFontOfSize:11] forWidth:horizontalTextSpace lineBreakMode:UILineBreakModeTailTruncation];
-        [self.timeLabel setFrame:CGRectMake(timeX, contentLabel.frame.origin.y + contentLabel.frame.size.height + vertElemSpacing, timeSize.width, timeSize.height)];
 
     }
     

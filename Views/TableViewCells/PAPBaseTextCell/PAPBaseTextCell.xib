@@ -5,13 +5,20 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="PAPBaseTextCell" customModule="iAnyPic" customModuleProvider="target"/>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="PAPBaseTextCell" customModule="iAnyPic" customModuleProvider="target">
+            <connections>
+                <outlet property="avatarImageView" destination="lfH-KS-dNa" id="BI1-PK-9xZ"/>
+                <outlet property="contentLabel" destination="col-Mo-DZX" id="xDp-T5-jTG"/>
+                <outlet property="nameButton" destination="b1q-rb-yw4" id="dRo-Nc-eKt"/>
+                <outlet property="timeLabel" destination="3cK-NG-GxC" id="D9w-AH-1aU"/>
+            </connections>
+        </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" rowHeight="61" id="KGk-i7-Jjw" customClass="PAPBaseTextCell" customModule="iAnyPic" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="320" height="61"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" rowHeight="56" id="KGk-i7-Jjw">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="56"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
-                <rect key="frame" x="0.0" y="0.0" width="320" height="60.5"/>
+                <rect key="frame" x="0.0" y="0.0" width="320" height="55.5"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lfH-KS-dNa" customClass="PAPProfileImageView" customModule="iAnyPic" customModuleProvider="target">
@@ -26,9 +33,12 @@
                             <userDefinedRuntimeAttribute type="image" keyPath="borderImage" value="ShadowProfilePicture-43"/>
                         </userDefinedRuntimeAttributes>
                     </view>
-                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="tailTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="b1q-rb-yw4">
-                        <rect key="frame" x="43" y="12" width="91" height="21"/>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="tailTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="b1q-rb-yw4">
+                        <rect key="frame" x="46" y="10" width="195.5" height="17"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="17" id="qYM-yb-DsB"/>
+                        </constraints>
                         <fontDescription key="fontDescription" type="boldSystem" pointSize="13"/>
                         <size key="titleShadowOffset" width="0.0" height="1"/>
                         <state key="normal" title="Name Button">
@@ -46,35 +56,55 @@
                             <action selector="didTapUserButtonAction:" destination="-1" eventType="touchUpInside" id="q6m-dG-s7O"/>
                         </connections>
                     </button>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Content" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="col-Mo-DZX">
-                        <rect key="frame" x="166" y="12" width="134" height="21"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="3 hours ago" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3cK-NG-GxC">
+                        <rect key="frame" x="249" y="11" width="62.5" height="14"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                        <color key="textColor" red="0.28627450980392155" green="0.21568627450980393" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                        <nil key="highlightedColor"/>
-                        <color key="shadowColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <size key="shadowOffset" width="0.0" height="1"/>
-                    </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="3 hours ago" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3cK-NG-GxC">
-                        <rect key="frame" x="46" y="28" width="85" height="21"/>
-                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="14" id="7S1-yh-cnt"/>
+                        </constraints>
                         <fontDescription key="fontDescription" type="system" pointSize="11"/>
                         <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                         <nil key="highlightedColor"/>
                         <color key="shadowColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <size key="shadowOffset" width="0.0" height="0.0"/>
                     </label>
-                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="SeparatorComments" translatesAutoresizingMaskIntoConstraints="NO" id="dd8-M9-BW9">
-                        <rect key="frame" x="0.0" y="58" width="320" height="2"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Content" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="col-Mo-DZX">
+                        <rect key="frame" x="46" y="27" width="266" height="17"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="17" id="BiF-k6-m4P"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                        <color key="textColor" red="0.28627450980392155" green="0.21568627450980393" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                        <nil key="highlightedColor"/>
+                        <color key="shadowColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <size key="shadowOffset" width="0.0" height="1"/>
+                    </label>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="SeparatorComments" translatesAutoresizingMaskIntoConstraints="NO" id="VNU-x0-OAh">
+                        <rect key="frame" x="0.0" y="53" width="320" height="2"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="2" id="MDz-oJ-HWw"/>
+                        </constraints>
                     </imageView>
                 </subviews>
                 <constraints>
+                    <constraint firstItem="b1q-rb-yw4" firstAttribute="leading" secondItem="lfH-KS-dNa" secondAttribute="trailing" constant="5" id="5U2-uS-tkU"/>
+                    <constraint firstItem="VNU-x0-OAh" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="5VA-hn-5Dz"/>
                     <constraint firstItem="lfH-KS-dNa" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="8" id="EcK-zX-MxX"/>
+                    <constraint firstAttribute="trailing" secondItem="col-Mo-DZX" secondAttribute="trailing" constant="8" id="HQp-0O-rgH"/>
+                    <constraint firstItem="3cK-NG-GxC" firstAttribute="leading" secondItem="b1q-rb-yw4" secondAttribute="trailing" constant="8" id="Mwo-sf-CT2"/>
+                    <constraint firstAttribute="trailing" secondItem="VNU-x0-OAh" secondAttribute="trailing" id="dfu-aW-Xxe"/>
+                    <constraint firstAttribute="trailing" secondItem="3cK-NG-GxC" secondAttribute="trailing" constant="8" id="eUs-As-blT"/>
+                    <constraint firstItem="col-Mo-DZX" firstAttribute="leading" secondItem="lfH-KS-dNa" secondAttribute="trailing" constant="5" id="f9J-At-v1b"/>
+                    <constraint firstItem="b1q-rb-yw4" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="fbm-Q9-loy"/>
                     <constraint firstItem="lfH-KS-dNa" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="8" id="riD-B4-QZz"/>
+                    <constraint firstItem="3cK-NG-GxC" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="11" id="wWT-ly-4dt"/>
+                    <constraint firstItem="col-Mo-DZX" firstAttribute="top" secondItem="b1q-rb-yw4" secondAttribute="bottom" id="xr2-cT-hh6"/>
+                    <constraint firstAttribute="bottom" secondItem="VNU-x0-OAh" secondAttribute="bottom" constant="0.5" id="yGh-Sf-N14"/>
                 </constraints>
             </tableViewCellContentView>
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-            <point key="canvasLocation" x="486" y="283.5"/>
+            <point key="canvasLocation" x="486" y="281"/>
         </tableViewCell>
     </objects>
     <resources>
