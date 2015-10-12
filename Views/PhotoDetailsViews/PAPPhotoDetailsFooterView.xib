@@ -7,38 +7,43 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="PAPPhotoDetailsFooterView" customModule="iAnyPic" customModuleProvider="target">
             <connections>
-                <outlet property="commentBox" destination="4Tb-F8-9gw" id="TmN-0b-4Bf"/>
                 <outlet property="commentField" destination="AW1-cw-BCU" id="WwL-uZ-zOG"/>
-                <outlet property="mainView" destination="soB-bi-JmH" id="aqh-FU-N2h"/>
                 <outlet property="messageIcon" destination="U0k-bI-jTa" id="iDD-YH-6ii"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view contentMode="scaleToFill" id="iN0-l3-epB">
-            <rect key="frame" x="0.0" y="0.0" width="600" height="69"/>
+            <rect key="frame" x="0.0" y="0.0" width="522" height="51"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="soB-bi-JmH" userLabel="Main View">
-                    <rect key="frame" x="20" y="0.0" width="560" height="51"/>
-                    <subviews>
-                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="IconAddComment" translatesAutoresizingMaskIntoConstraints="NO" id="U0k-bI-jTa" userLabel="Message Icon">
-                            <rect key="frame" x="9" y="17" width="19" height="17"/>
-                        </imageView>
-                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="TextFieldComment" translatesAutoresizingMaskIntoConstraints="NO" id="4Tb-F8-9gw" userLabel="Comment ImageView">
-                            <rect key="frame" x="35" y="8" width="517" height="35"/>
-                        </imageView>
-                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="AW1-cw-BCU" userLabel="Comment Field">
-                            <rect key="frame" x="36" y="10" width="516" height="30"/>
-                            <nil key="textColor"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                            <textInputTraits key="textInputTraits"/>
-                        </textField>
-                    </subviews>
-                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                </view>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="IconAddComment" translatesAutoresizingMaskIntoConstraints="NO" id="U0k-bI-jTa" userLabel="Message Icon">
+                    <rect key="frame" x="9" y="17" width="19" height="17"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="19" id="AbM-dg-2z7"/>
+                        <constraint firstAttribute="height" constant="17" id="cBe-hI-aoF"/>
+                    </constraints>
+                </imageView>
+                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" minimumFontSize="17" background="TextFieldComment" translatesAutoresizingMaskIntoConstraints="NO" id="AW1-cw-BCU" userLabel="Comment Field">
+                    <rect key="frame" x="35" y="8" width="479" height="30"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="30" id="rlT-AP-PxH"/>
+                    </constraints>
+                    <nil key="textColor"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                    <textInputTraits key="textInputTraits"/>
+                </textField>
             </subviews>
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="AW1-cw-BCU" firstAttribute="leading" secondItem="U0k-bI-jTa" secondAttribute="trailing" constant="7" id="4fF-fc-vmX"/>
+                <constraint firstItem="AW1-cw-BCU" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="8" id="S5G-tF-uiP"/>
+                <constraint firstAttribute="trailing" secondItem="AW1-cw-BCU" secondAttribute="trailing" constant="8" id="WDt-ln-MQS"/>
+                <constraint firstItem="U0k-bI-jTa" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="9" id="peU-gB-8Th"/>
+                <constraint firstItem="U0k-bI-jTa" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="17" id="uK7-G6-05P"/>
+            </constraints>
+            <nil key="simulatedStatusBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="393" y="295.5"/>
         </view>
     </objects>
     <resources>

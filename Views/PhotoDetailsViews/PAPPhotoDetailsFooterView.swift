@@ -10,12 +10,14 @@ import UIKit
 
 class PAPPhotoDetailsFooterView: UIView {
 
-    @IBOutlet var mainView: UIView!
-    @IBOutlet var messageIcon: UIImageView!
-    @IBOutlet var commentBox: UIImageView!
-    @IBOutlet var commentField: UITextField!
-
+    ///
     var view: UIView!
+    
+    ///
+    @IBOutlet var messageIcon: UIImageView!
+    
+    ///
+    @IBOutlet var commentField: UITextField!
     
     var hideDropShadow: Bool = false
     
@@ -62,6 +64,6 @@ class PAPPhotoDetailsFooterView: UIView {
     // MARK: - PAPPhotoDetailsFooterView
     
     class func rectForView() -> CGRect {
-        return CGRectMake(0.0, 0.0, UIScreen.mainScreen().bounds.size.width, 69.0)
+        return CGRectMake(0.0, 0.0, UIScreen.mainScreen().bounds.size.width, 51.0)
     }
 }
