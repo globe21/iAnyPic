@@ -10,59 +10,14 @@ import UIKit
 import Parse
 import ParseUI
 
-let baseHorizontalOffset = 20.0
-let baseWidth = 280.0
-
-let horiBorderSpacing = 6.0
-let horiMediumSpacing = 8.0
-
-let vertBorderSpacing = 6.0
-let vertSmallSpacing = 2.0
-
-
-let nameHeaderX = baseHorizontalOffset
-let nameHeaderY = 0.0
-let nameHeaderWidth = baseWidth
-let nameHeaderHeight = 46.0
-
-let avatarImageX = horiBorderSpacing
-let avatarImageY = vertBorderSpacing
-let avatarImageDim = 35.0
-
-let nameLabelX = avatarImageX+avatarImageDim+horiMediumSpacing
-let nameLabelY = avatarImageY+vertSmallSpacing
-let nameLabelMaxWidth = 280.0 - (horiBorderSpacing+avatarImageDim+horiMediumSpacing+horiBorderSpacing)
-
-let timeLabelX = nameLabelX
-let timeLabelMaxWidth = nameLabelMaxWidth
-
-let mainImageX = baseHorizontalOffset
-let mainImageY = nameHeaderHeight
-let mainImageWidth = baseWidth
-let mainImageHeight = 280.0
-
-let likeBarX = baseHorizontalOffset
-let likeBarY = nameHeaderHeight + mainImageHeight
-let likeBarWidth = baseWidth
-let likeBarHeight = 43.0
-
-let likeButtonX = 9.0
-let likeButtonY = 7.0
-let likeButtonDim = 28.0
-
-let likeProfileXBase = 46.0
-let likeProfileXSpace = 3.0
-let likeProfileY = 6.0
-let likeProfileDim = 30.0
-
-let viewTotalHeight = likeBarY+likeBarHeight
-let numLikePics = 7.0
-
 @objc protocol PAPPhotoDetailsHeaderViewDelegate {
     optional func photoDetailsHeaderView(headerView: PAPPhotoDetailsHeaderView, didTapUserButton button: UIButton, user: PFUser)
 }
 
 class PAPPhotoDetailsHeaderView: UIView {
+    
+    /// 
+    var view: UIView!
 
     /// The photo displayed in the view
     var photo: PFObject?
@@ -73,8 +28,11 @@ class PAPPhotoDetailsHeaderView: UIView {
     /// Array of the users that liked the photo
     var likeUsers = [PFUser]()
     
+    /// Current like avatars
+    var currentLikeAvatars = [PFObject]()
+    
     /// Time formatter
-    let timeFormatter : TTTTimeIntervalFormatter
+    let timeFormatter = TTTTimeIntervalFormatter()
     
     /// Heart-shaped like button
     var likeButton: UIButton!
@@ -82,28 +40,53 @@ class PAPPhotoDetailsHeaderView: UIView {
     /*! @name Delegate */
     var delegate: PAPPhotoDetailsHeaderViewDelegate?
 
-    var nameHeaderView: UIView!
+    @IBOutlet var nameHeaderView: UIView!
     
-    var photoImageView: PFImageView!
+    @IBOutlet var avatarImageView: PAPProfileImageView!
     
-    var likeBarView: UIView!
+    @IBOutlet var nameButton: UIButton!
     
-    var currentLikeAvatars = [PFObject]()
+    @IBOutlet var timeLabel: UILabel!
+    
+    @IBOutlet var photoImageView: PFImageView!
+    
+    @IBOutlet var likeBarView: UIView!
+    
     
     // MARK: - NSObject
     
-    required init(coder aDecoder: NSCoder) {
-        timeFormatter = TTTTimeIntervalFormatter()
+    func loadViewFromNib() -> UIView {
+        let bundle = NSBundle(forClass: self.dynamicType)
+        let nib = UINib(nibName: "PAPPhotoDetailsHeaderView", bundle: bundle)
+        let view = nib.instantiateWithOwner(self, options: nil)[0] as! UIView
         
+        return view
+    }
+    
+    func setupNib() {
+        self.view = loadViewFromNib()
+        self.view.frame = self.bounds
+        self.view.autoresizingMask = UIViewAutoresizing.FlexibleWidth.union(UIViewAutoresizing.FlexibleHeight)
+        
+        self.addSubview(self.view)
+        
+        // Additional Setup
+        self.nameHeaderView.backgroundColor = UIColor(patternImage: UIImage(named: "BackgroundComments.png")!)
+        self.nameButton.addTarget(self, action: "didTapUserNameButtonAction:", forControlEvents: UIControlEvents.TouchUpInside)
+    }
+    
+    required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)!
+        setupNib()
     }
     
     init(frame: CGRect, photo aPhoto: PFObject) {
-        photo = aPhoto
-        timeFormatter = TTTTimeIntervalFormatter()
-        photographer = aPhoto.objectForKey(kPAPPhotoUserKey) as? PFUser
-        
         super.init(frame: frame)
+        setupNib()
+        
+        photo = aPhoto
+        photographer = aPhoto.objectForKey(kPAPPhotoUserKey) as? PFUser
+        loadData()
     }
     
     convenience init(frame: CGRect, photo: PFObject, photographer: PFUser, likeUsers: [PFUser]) {
@@ -126,22 +109,37 @@ class PAPPhotoDetailsHeaderView: UIView {
     // MARK: - PAPPhotoDetailsHeaderView
     
     class func rectForView() -> CGRect {
-        return CGRectMake(0.0, 0.0, UIScreen.mainScreen().bounds.size.width, CGFloat(viewTotalHeight))
+        return CGRectMake(0.0, 0.0, UIScreen.mainScreen().bounds.size.width, CGFloat(369))
+    }
+    
+    func didTapUserNameButtonAction(button: UIButton) {
+        self.delegate?.photoDetailsHeaderView?(self, didTapUserButton: button, user: self.photographer!)
     }
     
     // MARK: ()
     func loadData() {
+        if let imageFile = self.photo?.objectForKey(kPAPPhotoPictureKey) as? PFFile {
+            self.photoImageView.file = imageFile
+            self.photoImageView.loadInBackground()
+        }
         
-//        PFFile *imageFile = [self.photo objectForKey:kPAPPhotoPictureKey];
-//        
-//        if (imageFile) {
-//            self.photoImageView.file = imageFile;
-//            [self.photoImageView loadInBackground];
-//        }
         self.photographer?.fetchInBackgroundWithBlock({ (object, error) -> Void in
-            // Create avatar view
             
+            // Load avatar image
+            self.avatarImageView.file = self.photographer?.objectForKey(kPAPUserProfilePicSmallKey) as? PFFile
+            self.avatarImageView.profileButton.addTarget(self, action: "didTapUserNameButtonAction:", forControlEvents: UIControlEvents.TouchUpInside)
+            
+            // Setup name button
+            let nameString = self.photographer?.objectForKey(kPAPUserDisplayNameKey) as? String
+            self.nameButton.setTitle(nameString, forState: UIControlState.Normal)
+            self.nameButton.setTitleColor(UIColor(red: 73.0/255.0, green: 55.0/255.0, blue: 35.0/255.0, alpha: 1.0), forState: UIControlState.Normal)
+            self.nameButton.setTitleColor(UIColor(red: 134.0/255.0, green: 100.0/255.0, blue: 65.0/255.0, alpha: 1.0), forState: UIControlState.Highlighted)
+            
+            // Setup time label
+            let timeString = self.timeFormatter.stringForTimeIntervalFromDate(NSDate(), toDate: self.photo?.createdAt!)
+            self.timeLabel.text = timeString
         })
+        
     }
     
     func reloadLikeBar() {
