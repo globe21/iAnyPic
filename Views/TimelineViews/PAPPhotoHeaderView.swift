@@ -175,7 +175,7 @@ class PAPPhotoHeaderView: UIView {
     func didSetPhoto() {
         if let user = self.photo!.objectForKey(kPAPPhotoUserKey) as? PFUser {
             if let profilePictureSmall = user.objectForKey(kPAPUserProfilePicSmallKey) as? PFFile {
-                self.avatarImageView.setFile(profilePictureSmall)
+                self.avatarImageView.file = profilePictureSmall
             }
             
             let authorName = user.objectForKey(kPAPUserDisplayNameKey) as? String

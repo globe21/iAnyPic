@@ -21,6 +21,14 @@ class PAPProfileImageView: UIView {
     @IBInspectable var borderImage: UIImage!
     
     var view: UIView!
+    
+    var file: PFFile? {
+        didSet {
+            self.profileImageView.image = UIImage(named: "AvatarPlaceholder.png")
+            self.profileImageView.file = file
+            self.profileImageView.loadInBackground()
+        }
+    }
 
     // Mark: - Initialization
     
@@ -72,14 +80,6 @@ class PAPProfileImageView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         self.bringSubviewToFront(self.borderImageView)
-    }
-    
-    // MARK: - PAPProfileImageView
-    
-    func setFile(file: PFFile) {
-        self.profileImageView.image = UIImage(named: "AvatarPlaceholder.png")
-        self.profileImageView.file = file
-        self.profileImageView.loadInBackground()
     }
     
     // TO-Do: Autolayout

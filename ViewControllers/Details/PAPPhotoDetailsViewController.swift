@@ -48,6 +48,7 @@ class PAPPhotoDetailsViewController: PFQueryTableViewController, UITextFieldDele
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        self.tableView.showsVerticalScrollIndicator = false
         self.navigationItem.titleView = UIImageView(image: UIImage(named: "LogoNavigationBar"))
         self.navigationItem.hidesBackButton = true
         
@@ -94,20 +95,21 @@ class PAPPhotoDetailsViewController: PFQueryTableViewController, UITextFieldDele
         super.viewDidAppear(animated)
         
         self.headerView.reloadLikeBar()
+        self.tableView.separatorStyle = UITableViewCellSeparatorStyle.None
     }
     
     // MARK: - UITableViewDelegate
     
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         if(indexPath.row < self.objects?.count) { // A comment row
-            let object = self.objects![indexPath.row]
-            let fromUser = object[kPAPActivityFromUserKey] as! PFUser
+            //let object = self.objects![indexPath.row]
+            //let fromUser = object[kPAPActivityFromUserKey] as! PFUser
             
-            let commentString = object[kPAPActivityContentKey] as! String
-            let nameString = fromUser[kPAPUserDisplayNameKey] as! String
+            //let commentString = object[kPAPActivityContentKey] as? String
+            //let nameString = fromUser[kPAPUserDisplayNameKey] as? String
             
 //            return [PAPActivityCell heightForCellWithName:nameString contentString:commentString cellInsetWidth:kPAPCellInsetWidth];
-            return 44.0
+            return 56.0
         } else {
             // Paging row
             return 44.0
@@ -148,7 +150,6 @@ class PAPPhotoDetailsViewController: PFQueryTableViewController, UITextFieldDele
     
     // MARK: - UITableViewController
     
-    // TO-DO
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath, object: PFObject?) -> PFTableViewCell? {
         let CellIdentifier = "CommentCell"
         
@@ -159,10 +160,13 @@ class PAPPhotoDetailsViewController: PFQueryTableViewController, UITextFieldDele
             cell = PAPBaseTextCell(style: UITableViewCellStyle.Default, reuseIdentifier: CellIdentifier)
         }
         
+        cell!.user = object?.objectForKey(kPAPActivityFromUserKey) as? PFUser
+        cell!.contentText = object?.objectForKey(kPAPActivityContentKey) as? String
+        cell!.date = object?.createdAt
+        
         return cell
     }
     
-    // TO-DO
     override func tableView(tableView: UITableView, cellForNextPageAtIndexPath indexPath: NSIndexPath) -> PFTableViewCell? {
         let CellIdentifier = "PagingCell"
         let PAPCellInsetWidth: CGFloat = 20.0
