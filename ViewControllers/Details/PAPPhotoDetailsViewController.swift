@@ -214,8 +214,7 @@ class PAPPhotoDetailsViewController: PFQueryTableViewController, UITextFieldDele
     }
     
     func shouldPresentAccountViewForUser(user: PFUser) {
-        let accountViewController = PAPAccountViewController(style: UITableViewStyle.Plain)
-        accountViewController.user = user
+        let accountViewController = PAPAccountViewController(user: user, style: UITableViewStyle.Plain, className: kPAPPhotoClassKey)
         self.navigationController?.pushViewController(accountViewController, animated: true)
     }
     

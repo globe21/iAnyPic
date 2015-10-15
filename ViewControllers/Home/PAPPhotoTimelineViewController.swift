@@ -372,8 +372,7 @@ class PAPPhotoTimelineViewController: PFQueryTableViewController, PAPPhotoHeader
     }
     
     func photoHeaderView(photoHeaderView: PAPPhotoHeaderView, didTapUserButton button: UIButton, user: PFUser) {
-        let accountViewController = PAPAccountViewController(style: UITableViewStyle.Plain, className: kPAPPhotoClassKey)
-        accountViewController.user = user
+        let accountViewController = PAPAccountViewController(user: user, style: UITableViewStyle.Plain, className: kPAPPhotoClassKey)
         self.navigationController?.pushViewController(accountViewController, animated: true)
     }
     

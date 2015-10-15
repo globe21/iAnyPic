@@ -26,19 +26,15 @@ class PAPEditPhotoViewController: UIViewController, UITextFieldDelegate, UIScrol
     var photoPostBackgroundTaskId: UIBackgroundTaskIdentifier = UIBackgroundTaskInvalid
     
     // MARK: - NSObject
+    
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        
-        if let view = NSBundle.mainBundle().loadNibNamed("PAPEditPhotoView", owner: self, options: nil)[0] as? UIView {
-            self.view = view
-        }
     }
     
     init(image: UIImage?) {
+        super.init(nibName: "PAPEditPhotoView", bundle: nil)
 
         self.image = image
-
-        super.init(nibName: "PAPEditPhotoView", bundle: nil)        
     }
     
     deinit {
@@ -79,8 +75,8 @@ class PAPEditPhotoViewController: UIViewController, UITextFieldDelegate, UIScrol
         self.scrollView.contentSize = CGSizeMake(self.scrollView.bounds.size.width, self.photoImageView.frame.origin.y + self.photoImageView.frame.size.height + footerView.frame.size.height)
         
         // Notification
-        //NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
-        //NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
         
         self.shouldUploadImage(self.image!)
     }
@@ -88,7 +84,7 @@ class PAPEditPhotoViewController: UIViewController, UITextFieldDelegate, UIScrol
     // MARK: - UITextFieldDelegate
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
-        //self.doneButtonAction(textField)
+        self.doneButtonAction(textField)
         textField.resignFirstResponder()
         return true
     }
@@ -151,8 +147,8 @@ class PAPEditPhotoViewController: UIViewController, UITextFieldDelegate, UIScrol
         self.scrollView.contentSize = scrollViewContentSize
         
         var scrollViewContentOffset = self.scrollView.contentOffset
-        scrollViewContentOffset.y += keyboardFrame.size.height
-        scrollViewContentOffset.y -= 42.0
+        scrollViewContentOffset.y += self.footerView.bounds.height
+        //scrollViewContentOffset.y -= 42.0
         self.scrollView.contentOffset = scrollViewContentOffset
     }
     
@@ -169,7 +165,7 @@ class PAPEditPhotoViewController: UIViewController, UITextFieldDelegate, UIScrol
     
     // MAKR: - UIButton Actions
     
-    func doneButtonAction(button: UIButton) {
+    func doneButtonAction(sender: AnyObject) {
         var userInfo = Dictionary<String, String>()
         let trimmedComment = self.commentTextField.text!.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
         if(trimmedComment.characters.count != 0) {

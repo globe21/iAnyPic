@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="8191" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="8191" systemVersion="15A284" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
@@ -18,6 +18,7 @@
             <subviews>
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="IconAddComment" translatesAutoresizingMaskIntoConstraints="NO" id="U0k-bI-jTa" userLabel="Message Icon">
                     <rect key="frame" x="9" y="17" width="19" height="17"/>
+                    <animations/>
                     <constraints>
                         <constraint firstAttribute="width" constant="19" id="AbM-dg-2z7"/>
                         <constraint firstAttribute="height" constant="17" id="cBe-hI-aoF"/>
@@ -25,6 +26,7 @@
                 </imageView>
                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" minimumFontSize="17" background="TextFieldComment" translatesAutoresizingMaskIntoConstraints="NO" id="AW1-cw-BCU" userLabel="Comment Field">
                     <rect key="frame" x="35" y="8" width="479" height="30"/>
+                    <animations/>
                     <constraints>
                         <constraint firstAttribute="height" constant="30" id="rlT-AP-PxH"/>
                     </constraints>
@@ -33,6 +35,7 @@
                     <textInputTraits key="textInputTraits"/>
                 </textField>
             </subviews>
+            <animations/>
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
             <constraints>
                 <constraint firstItem="AW1-cw-BCU" firstAttribute="leading" secondItem="U0k-bI-jTa" secondAttribute="trailing" constant="7" id="4fF-fc-vmX"/>
